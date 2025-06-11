@@ -19,7 +19,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
     name: '',
     email: '',
     password: '',
-    role: '',
+    role: '' as 'student' | 'artist' | 'businessperson' | '',
     country: '',
     city: '',
     occupation: '',
@@ -51,42 +51,47 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Join Passport Pals</CardTitle>
-        <CardDescription className="text-center">
+    <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 border-2 border-gradient-to-r from-purple-400 to-pink-400 shadow-2xl transform hover:scale-105 transition-all duration-300">
+      <CardHeader className="space-y-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white rounded-t-lg">
+        <CardTitle className="text-3xl font-bold text-center flex items-center justify-center gap-3">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center transform rotate-12 hover:rotate-0 transition-transform duration-500">
+            <Globe className="h-8 w-8 text-purple-600" />
+          </div>
+          Join Passport Pals
+        </CardTitle>
+        <CardDescription className="text-center text-purple-100 text-lg">
           Connect with your community worldwide
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent className="p-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name *</Label>
+              <Label htmlFor="name" className="text-purple-700 font-semibold">Full Name *</Label>
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <User className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
                 <Input
                   id="name"
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={(e) => updateFormData('name', e.target.value)}
-                  className="pl-10"
+                  className="pl-12 border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email" className="text-purple-700 font-semibold">Email *</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Mail className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={(e) => updateFormData('email', e.target.value)}
-                  className="pl-10"
+                  className="pl-12 border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
                   required
                 />
               </div>
@@ -94,109 +99,113 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password *</Label>
+            <Label htmlFor="password" className="text-purple-700 font-semibold">Password *</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Lock className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => updateFormData('password', e.target.value)}
-                className="pl-10"
+                className="pl-12 border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="role">I am a *</Label>
-            <Select value={formData.role} onValueChange={(value) => updateFormData('role', value)}>
-              <SelectTrigger>
+            <Label htmlFor="role" className="text-purple-700 font-semibold">I am a *</Label>
+            <Select value={formData.role} onValueChange={(value: 'student' | 'artist' | 'businessperson') => updateFormData('role', value)}>
+              <SelectTrigger className="border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm">
                 <SelectValue placeholder="Select your role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="student">Student</SelectItem>
-                <SelectItem value="artist">Artist</SelectItem>
-                <SelectItem value="businessperson">Businessperson</SelectItem>
+                <SelectItem value="student">🎓 Student</SelectItem>
+                <SelectItem value="artist">🎨 Artist</SelectItem>
+                <SelectItem value="businessperson">💼 Businessperson</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="country">Home Country *</Label>
+              <Label htmlFor="country" className="text-purple-700 font-semibold">Home Country *</Label>
               <div className="relative">
-                <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Globe className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
                 <Input
                   id="country"
                   placeholder="India"
                   value={formData.country}
                   onChange={(e) => updateFormData('country', e.target.value)}
-                  className="pl-10"
+                  className="pl-12 border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
+              <Label htmlFor="city" className="text-purple-700 font-semibold">City</Label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <MapPin className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
                 <Input
                   id="city"
                   placeholder="Mumbai"
                   value={formData.city}
                   onChange={(e) => updateFormData('city', e.target.value)}
-                  className="pl-10"
+                  className="pl-12 border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="occupation">Occupation/Field of Study</Label>
+            <Label htmlFor="occupation" className="text-purple-700 font-semibold">Occupation/Field of Study</Label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Briefcase className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
               <Input
                 id="occupation"
                 placeholder="Computer Science Student"
                 value={formData.occupation}
                 onChange={(e) => updateFormData('occupation', e.target.value)}
-                className="pl-10"
+                className="pl-12 border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Tell us about yourself</Label>
+            <Label htmlFor="bio" className="text-purple-700 font-semibold">Tell us about yourself</Label>
             <Textarea
               id="bio"
               placeholder="Share a bit about yourself and what you're looking for in the community..."
               value={formData.bio}
               onChange={(e) => updateFormData('bio', e.target.value)}
               rows={3}
+              className="border-2 border-purple-200 focus:border-purple-500 bg-white/80 backdrop-blur-sm"
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Creating account...
               </>
             ) : (
-              'Create Account'
+              <>
+                <User className="mr-2 h-5 w-5" />
+                Create Account
+              </>
             )}
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
             <button
               onClick={onSwitchToLogin}
-              className="text-blue-600 hover:text-blue-500 font-medium"
+              className="text-purple-600 hover:text-purple-500 font-medium underline"
             >
               Sign in
             </button>
