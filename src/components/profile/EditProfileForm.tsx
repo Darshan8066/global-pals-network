@@ -109,7 +109,7 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
                   <SelectTrigger className="bg-white/20 border-white/30 text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border border-gray-300">
                     <SelectItem value="student">🎓 Student</SelectItem>
                     <SelectItem value="artist">🎨 Artist</SelectItem>
                     <SelectItem value="businessperson">💼 Businessperson</SelectItem>

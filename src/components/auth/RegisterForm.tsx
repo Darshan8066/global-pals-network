@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,7 @@ const RegisterForm = () => {
       return;
     }
 
-    if (formData.role === '') {
+    if (!formData.role || formData.role === '') {
       toast.error('Please select a role');
       return;
     }
@@ -50,7 +51,7 @@ const RegisterForm = () => {
       createdAt: new Date()
     };
 
-    login(newUser);
+    login(newUser, 'mock-token');
     toast.success('Account created successfully!');
   };
 
@@ -116,7 +117,7 @@ const RegisterForm = () => {
                 <SelectTrigger className="bg-white/20 border-white/30 text-white">
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white border border-gray-300">
                   <SelectItem value="student">🎓 Student</SelectItem>
                   <SelectItem value="artist">🎨 Artist</SelectItem>
                   <SelectItem value="businessperson">💼 Business Person</SelectItem>
