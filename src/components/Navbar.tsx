@@ -54,6 +54,18 @@ const Navbar = () => {
       : 'bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm';
   };
 
+  // Helper function to get user initials safely
+  const getUserInitials = () => {
+    if (!user || !user.name) return 'U';
+    return user.name.charAt(0).toUpperCase();
+  };
+
+  // Helper function to get user display name safely
+  const getUserDisplayName = () => {
+    if (!user || !user.name) return 'User';
+    return user.name;
+  };
+
   return (
     <>
       <nav className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 shadow-lg backdrop-blur-md border-b border-white/20">
@@ -113,7 +125,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <div className="hidden md:flex items-center space-x-3">
                   <div className="text-right">
-                    <p className="text-white font-semibold">{user.name}</p>
+                    <p className="text-white font-semibold">{getUserDisplayName()}</p>
                     <div className="flex items-center space-x-2">
                       <Badge variant="secondary" className="bg-white/20 text-white text-xs">
                         {user.role === 'student' ? '🎓' : user.role === 'artist' ? '🎨' : '💼'}
@@ -136,7 +148,7 @@ const Navbar = () => {
                   <Avatar className="h-10 w-10 border-2 border-white shadow-lg">
                     <AvatarImage src={user.profileImage} />
                     <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                      {user.name.charAt(0).toUpperCase()}
+                      {getUserInitials()}
                     </AvatarFallback>
                   </Avatar>
                   {user.isVerified && (
