@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { User, AuthState } from '../types/user';
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (user: User, token: string) => void;
   register: (userData: Partial<User> & { password: string }) => Promise<boolean>;
   logout: () => void;
   updateProfile: (updates: Partial<User>) => void;
@@ -26,33 +26,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isLoading: false,
   });
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setAuthState(prev => ({ ...prev, isLoading: true }));
-    
-    // Mock login - in real app, this would call your backend
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const mockUser: User = {
-      id: '1',
-      email,
-      name: 'John Doe',
-      role: 'student',
-      country: 'India',
-      city: 'Mumbai',
-      occupation: 'Computer Science Student',
-      interests: ['Technology', 'Travel', 'Photography'],
-      isVerified: true,
-      bio: 'Excited to connect with fellow Indians studying abroad!',
-      createdAt: new Date(),
-    };
-
+  const login = (user: User, token: string) => {
     setAuthState({
-      user: mockUser,
+      user,
       isAuthenticated: true,
       isLoading: false,
     });
-
-    return true;
   };
 
   const register = async (userData: Partial<User> & { password: string }): Promise<boolean> => {
@@ -67,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       role: userData.role!,
       country: userData.country!,
       city: userData.city!,
-      occupation: userData.occupation!,
+      occupation: userData.occupation || '',
       interests: userData.interests || [],
       isVerified: false,
       bio: userData.bio,

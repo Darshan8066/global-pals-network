@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,8 +9,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { User, Mail, MapPin, Briefcase, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
-const RegisterForm = () => {
-  const { login } = useAuth();
+interface RegisterFormProps {
+  onSwitchToLogin?: () => void;
+}
+
+const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,7 +27,7 @@ const RegisterForm = () => {
     interests: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name || !formData.email || !formData.password || !formData.role || !formData.country || !formData.city) {
@@ -32,27 +35,27 @@ const RegisterForm = () => {
       return;
     }
 
-    if (!formData.role || formData.role === '') {
+    if (!formData.role) {
       toast.error('Please select a role');
       return;
     }
     
-    const newUser = {
-      id: '1',
-      email: formData.email,
+    const userData = {
       name: formData.name,
+      email: formData.email,
+      password: formData.password,
       role: formData.role as 'student' | 'artist' | 'businessperson',
       country: formData.country,
       city: formData.city,
       occupation: formData.occupation,
       interests: formData.interests ? formData.interests.split(',').map(i => i.trim()) : [],
-      isVerified: false,
       bio: formData.bio,
-      createdAt: new Date()
     };
 
-    login(newUser, 'mock-token');
-    toast.success('Account created successfully!');
+    const success = await register(userData);
+    if (success) {
+      toast.success('Account created successfully!');
+    }
   };
 
   return (
@@ -201,6 +204,19 @@ const RegisterForm = () => {
             >
               Create Account
             </Button>
+
+            {onSwitchToLogin && (
+              <div className="text-center mt-4">
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={onSwitchToLogin}
+                  className="text-white/90 hover:text-white"
+                >
+                  Already have an account? Login here
+                </Button>
+              </div>
+            )}
           </form>
         </CardContent>
       </Card>

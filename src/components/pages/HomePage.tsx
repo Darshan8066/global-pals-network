@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -103,7 +102,7 @@ const HomePage = () => {
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-3">
                 <Users className="h-6 w-6" />
-                Welcome back, {user.name}!
+                Welcome, {user.name}!
                 <Sparkles className="h-5 w-5 text-yellow-300 animate-pulse" />
               </CardTitle>
               <CardDescription className="text-white/80 text-lg">
