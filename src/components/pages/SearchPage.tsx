@@ -69,8 +69,8 @@ const SearchPage = () => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          user.occupation.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          user.currentLocation.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = !filterRole || user.role === filterRole;
-    const matchesCountry = !filterCountry || user.country === filterCountry;
+    const matchesRole = !filterRole || filterRole === 'all' || user.role === filterRole;
+    const matchesCountry = !filterCountry || filterCountry === 'all' || user.country === filterCountry;
     
     return matchesSearch && matchesRole && matchesCountry;
   });
@@ -125,7 +125,7 @@ const SearchPage = () => {
                   <SelectValue placeholder="Filter by role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Roles</SelectItem>
+                  <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="student">🎓 Student</SelectItem>
                   <SelectItem value="artist">🎨 Artist</SelectItem>
                   <SelectItem value="businessperson">💼 Business Person</SelectItem>
@@ -137,7 +137,7 @@ const SearchPage = () => {
                   <SelectValue placeholder="Filter by country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Countries</SelectItem>
+                  <SelectItem value="all">All Countries</SelectItem>
                   <SelectItem value="India">🇮🇳 India</SelectItem>
                   <SelectItem value="Pakistan">🇵🇰 Pakistan</SelectItem>
                   <SelectItem value="Bangladesh">🇧🇩 Bangladesh</SelectItem>
