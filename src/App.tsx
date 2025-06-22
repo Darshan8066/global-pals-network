@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import AuthPage from "./components/auth/AuthPage";
 import Dashboard from "./components/dashboard/Dashboard";
+import ProfilePage from "./components/profile/ProfilePage";
 import Navbar from "./components/Navbar";
 
 const queryClient = new QueryClient();
@@ -17,7 +18,11 @@ const AppContent = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      {isAuthenticated ? <Dashboard /> : <AuthPage />}
+      <Routes>
+        <Route path="/" element={isAuthenticated ? <Dashboard /> : <AuthPage />} />
+        <Route path="/profile" element={isAuthenticated ? <ProfilePage /> : <AuthPage />} />
+        <Route path="*" element={isAuthenticated ? <Dashboard /> : <AuthPage />} />
+      </Routes>
     </div>
   );
 };
@@ -29,10 +34,7 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<AppContent />} />
-            <Route path="*" element={<AppContent />} />
-          </Routes>
+          <AppContent />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
