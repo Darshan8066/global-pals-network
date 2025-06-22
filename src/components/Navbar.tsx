@@ -10,14 +10,18 @@ import {
   User, 
   Shield, 
   Sparkles,
-  Trash2
+  Trash2,
+  Search,
+  MessageCircle,
+  Home
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import DeleteProfileDialog from './profile/DeleteProfileDialog';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleProfileClick = () => {
@@ -28,7 +32,27 @@ const Navbar = () => {
     navigate('/');
   };
 
-  if (!isAuthenticated) return null;
+  const handleSearchClick = () => {
+    navigate('/search');
+  };
+
+  const handleChatClick = () => {
+    navigate('/chat');
+  };
+
+  const handleAuthClick = () => {
+    navigate('/auth');
+  };
+
+  const getButtonVariant = (path: string) => {
+    return location.pathname === path ? 'default' : 'outline';
+  };
+
+  const getButtonClasses = (path: string) => {
+    return location.pathname === path 
+      ? 'bg-white/30 border-white/50 text-white'
+      : 'bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm';
+  };
 
   return (
     <>
@@ -47,8 +71,45 @@ const Navbar = () => {
               <span className="text-2xl font-bold text-white">Passport Pals</span>
             </button>
 
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Button
+                onClick={handleHomeClick}
+                variant={getButtonVariant('/')}
+                size="sm"
+                className={getButtonClasses('/')}
+              >
+                <Home className="h-4 w-4 mr-1" />
+                Home
+              </Button>
+
+              {isAuthenticated && (
+                <>
+                  <Button
+                    onClick={handleSearchClick}
+                    variant={getButtonVariant('/search')}
+                    size="sm"
+                    className={getButtonClasses('/search')}
+                  >
+                    <Search className="h-4 w-4 mr-1" />
+                    Search
+                  </Button>
+
+                  <Button
+                    onClick={handleChatClick}
+                    variant={getButtonVariant('/chat')}
+                    size="sm"
+                    className={getButtonClasses('/chat')}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Chat
+                  </Button>
+                </>
+              )}
+            </div>
+
             {/* User Menu */}
-            {user && (
+            {isAuthenticated && user ? (
               <div className="flex items-center space-x-4">
                 <div className="hidden md:flex items-center space-x-3">
                   <div className="text-right">
@@ -88,7 +149,7 @@ const Navbar = () => {
                     onClick={handleProfileClick}
                     variant="outline"
                     size="sm"
-                    className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+                    className={getButtonClasses('/profile')}
                   >
                     <User className="h-4 w-4 mr-1" />
                     Profile
@@ -115,6 +176,13 @@ const Navbar = () => {
                   </Button>
                 </div>
               </div>
+            ) : (
+              <Button
+                onClick={handleAuthClick}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+              >
+                Sign In
+              </Button>
             )}
           </div>
         </div>
