@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import { Globe, Users, Shield, MessageCircle, Sparkles, Heart, Zap } from 'lucide-react';
+import { Users, Shield, MessageCircle, Sparkles, Heart, Zap } from 'lucide-react';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -23,8 +23,7 @@ const AuthPage = () => {
             <div className="text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start space-x-4 mb-6">
                 <div className="relative">
-                  <Globe className="h-16 w-16 text-white drop-shadow-lg transform hover:rotate-12 transition-transform duration-500" />
-                  <Sparkles className="h-6 w-6 text-yellow-300 absolute -top-2 -right-2 animate-pulse" />
+                  <Sparkles className="h-6 w-6 text-yellow-300 animate-pulse" />
                 </div>
                 <h1 className="text-5xl font-bold text-white drop-shadow-lg bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
                   Passport Pals
