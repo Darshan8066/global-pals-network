@@ -17,15 +17,19 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
 
+  // Always show AuthPage for unauthenticated users
+  if (!isAuthenticated) {
+    return <AuthPage />;
+  }
+
   return (
     <div className="min-h-screen w-full">
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/search" element={isAuthenticated ? <SearchPage /> : <AuthPage />} />
-        <Route path="/chat" element={isAuthenticated ? <ChatPage /> : <AuthPage />} />
-        <Route path="/profile" element={isAuthenticated ? <ProfilePage /> : <AuthPage />} />
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </div>
