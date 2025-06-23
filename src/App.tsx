@@ -10,6 +10,7 @@ import HomePage from "./components/pages/HomePage";
 import SearchPage from "./components/pages/SearchPage";
 import ChatPage from "./components/pages/ChatPage";
 import ProfilePage from "./components/profile/ProfilePage";
+import MultiStepEditProfile from "./components/profile/MultiStepEditProfile";
 import Navbar from "./components/Navbar";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const AppContent = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/edit" element={<MultiStepEditProfile />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </div>

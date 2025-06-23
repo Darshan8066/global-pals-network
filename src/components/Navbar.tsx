@@ -149,28 +149,6 @@ const Navbar = () => {
                   Chat
                 </Button>
               </div>
-
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={() => setShowDeleteDialog(true)}
-                  variant="outline"
-                  size="sm"
-                  className="bg-red-500/20 border-red-300/50 text-red-100 hover:bg-red-500/40 backdrop-blur-sm"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Delete
-                </Button>
-
-                <Button
-                  onClick={logout}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
-                >
-                  <LogOut className="h-4 w-4 mr-1" />
-                  Logout
-                </Button>
-              </div>
             </div>
           </div>
         </div>
@@ -195,13 +173,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-      {/* Add bottom padding to main content to account for fixed bottom bar */}
-      <style jsx>{`
-        body {
-          padding-bottom: 60px;
-        }
-      `}</style>
 
       <DeleteProfileDialog 
         isOpen={showDeleteDialog} 
