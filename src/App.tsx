@@ -9,6 +9,7 @@ import AuthPage from "./components/auth/AuthPage";
 import HomePage from "./components/pages/HomePage";
 import SearchPage from "./components/pages/SearchPage";
 import ChatPage from "./components/pages/ChatPage";
+import StatsPage from "./components/pages/StatsPage";
 import ProfilePage from "./components/profile/ProfilePage";
 import MultiStepEditProfile from "./components/profile/MultiStepEditProfile";
 import Navbar from "./components/Navbar";
@@ -30,6 +31,7 @@ const AppContent = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/stats" element={<StatsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<MultiStepEditProfile />} />
         <Route path="*" element={<HomePage />} />

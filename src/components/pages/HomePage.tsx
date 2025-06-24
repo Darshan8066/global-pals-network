@@ -28,10 +28,34 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const quickStats = [
-    { label: 'Active Members', value: '12.5K', icon: Users, color: 'from-blue-600 to-blue-800' },
-    { label: 'Countries', value: '85', icon: Globe, color: 'from-green-600 to-green-800' },
-    { label: 'Messages Today', value: '3.2K', icon: MessageCircle, color: 'from-purple-600 to-purple-800' },
-    { label: 'New Connections', value: '156', icon: TrendingUp, color: 'from-emerald-600 to-emerald-800' }
+    { 
+      label: 'Active Members', 
+      value: '12.5K', 
+      icon: Users, 
+      color: 'from-blue-600 to-blue-800',
+      page: '/search' 
+    },
+    { 
+      label: 'Countries', 
+      value: '85', 
+      icon: Globe, 
+      color: 'from-green-600 to-green-800',
+      page: '/search' 
+    },
+    { 
+      label: 'Messages Today', 
+      value: '3.2K', 
+      icon: MessageCircle, 
+      color: 'from-purple-600 to-purple-800',
+      page: '/chat' 
+    },
+    { 
+      label: 'New Connections', 
+      value: '156', 
+      icon: TrendingUp, 
+      color: 'from-emerald-600 to-emerald-800',
+      page: '/search' 
+    }
   ];
 
   const features = [
@@ -39,25 +63,29 @@ const HomePage = () => {
       icon: Search,
       title: 'Smart Discovery',
       description: 'Find people from your homeland with our advanced search and filtering system.',
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-blue-500 to-cyan-500',
+      page: '/search'
     },
     {
       icon: Shield,
       title: 'Verified Profiles',
       description: 'Connect with confidence through our secure verification process.',
-      color: 'from-green-500 to-emerald-500'
+      color: 'from-green-500 to-emerald-500',
+      page: '/profile'
     },
     {
       icon: MessageCircle,
       title: 'Real-time Chat',
       description: 'Instant messaging with translation support for seamless communication.',
-      color: 'from-purple-500 to-pink-500'
+      color: 'from-purple-500 to-pink-500',
+      page: '/chat'
     },
     {
       icon: Globe,
       title: 'Global Network',
       description: 'Join communities across 85+ countries and expand your global network.',
-      color: 'from-orange-500 to-red-500'
+      color: 'from-orange-500 to-red-500',
+      page: '/search'
     }
   ];
 
@@ -79,10 +107,10 @@ const HomePage = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'student': return <GraduationCap className="h-5 w-5" />;
-      case 'professional': return <Building className="h-5 w-5" />;
-      case 'artist': return <Plane className="h-5 w-5" />;
-      default: return <Users className="h-5 w-5" />;
+      case 'student': return <GraduationCap className="h-4 w-4" />;
+      case 'professional': return <Building className="h-4 w-4" />;
+      case 'artist': return <Plane className="h-4 w-4" />;
+      default: return <Users className="h-4 w-4" />;
     }
   };
 
@@ -101,107 +129,115 @@ const HomePage = () => {
         <div className="absolute top-96 left-32 text-4xl opacity-10 drift-animation" style={{animationDelay: '3s'}}>🌍</div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 py-6 max-w-7xl relative z-10">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-6 mb-8">
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-6">
             <div className="relative pulse-glow">
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-6 shadow-2xl">
-                <Globe className="h-20 w-20 text-white" />
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-4 shadow-2xl">
+                <Globe className="h-12 w-12 text-white" />
               </div>
-              <MapPin className="h-8 w-8 text-yellow-400 absolute -top-2 -right-2 bounce-gentle" />
+              <MapPin className="h-5 w-5 text-yellow-400 absolute -top-1 -right-1 bounce-gentle" />
             </div>
             <div className="text-center">
-              <h1 className="text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl mb-4">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl mb-2">
                 Passport Pals
               </h1>
-              <p className="text-2xl text-blue-200 font-semibold">Your Global Community Connection</p>
+              <p className="text-lg text-blue-200 font-medium">Your Global Community Connection</p>
             </div>
           </div>
           
-          <div className="max-w-4xl mx-auto mb-12">
-            <p className="text-3xl text-gray-200 mb-6 leading-relaxed">
+          <div className="max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-gray-200 mb-4 leading-relaxed">
               Connect with your homeland community living around the world
             </p>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+            <p className="text-base text-gray-300 mb-6 leading-relaxed">
               Passport Pals is the premier platform for expatriates, students, and professionals to find their community abroad. 
               Whether you're seeking professional networking, cultural connections, or simply want to meet people who share your background, 
               we bridge the gap between home and your new destination.
             </p>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-6 mb-12">
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
             <Button 
               onClick={() => navigate('/search')}
-              className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-10 py-4 text-xl shadow-2xl btn-animated border-0"
+              className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-6 py-3 text-lg shadow-2xl btn-animated border-0"
             >
-              <Search className="h-6 w-6 mr-3" />
+              <Search className="h-5 w-5 mr-2" />
               Find Your Community
-              <ArrowRight className="h-5 w-5 ml-2" />
+              <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
             <Button 
               onClick={() => navigate('/chat')}
-              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white px-10 py-4 text-xl shadow-2xl btn-animated border-0"
+              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white px-6 py-3 text-lg shadow-2xl btn-animated border-0"
             >
-              <MessageCircle className="h-6 w-6 mr-3" />
+              <MessageCircle className="h-5 w-5 mr-2" />
               Start Connecting
-              <Heart className="h-5 w-5 ml-2" />
+              <Heart className="h-4 w-4 ml-2" />
             </Button>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {quickStats.map((stat, index) => (
-            <Card key={index} className={`animated-card hover:scale-105 transition-all duration-300 hover:shadow-2xl border-0 shimmer-effect`}>
-              <CardContent className="p-8 text-center">
-                <div className="mb-6">
-                  <stat.icon className="h-16 w-16 mx-auto text-blue-300" />
+            <Card 
+              key={index} 
+              className="animated-card hover:scale-105 transition-all duration-300 hover:shadow-2xl border-0 shimmer-effect cursor-pointer"
+              onClick={() => navigate(stat.page)}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="mb-4">
+                  <stat.icon className="h-12 w-12 mx-auto text-blue-300" />
                 </div>
-                <p className="text-4xl font-bold mb-2 text-white">{stat.value}</p>
-                <p className="text-lg text-gray-300">{stat.label}</p>
+                <p className="text-2xl font-bold mb-1 text-white">{stat.value}</p>
+                <p className="text-sm text-gray-300">{stat.label}</p>
               </CardContent>
             </Card>
           ))}
         </div>
 
         {/* What is Passport Pals */}
-        <Card className="glass-card mb-16 hover:shadow-2xl transition-all duration-300 border-0">
-          <CardHeader className="text-center pb-8">
-            <CardTitle className="text-4xl text-white flex items-center justify-center gap-4 mb-4">
-              <Zap className="h-10 w-10 text-yellow-400" />
+        <Card className="glass-card mb-12 hover:shadow-2xl transition-all duration-300 border-0">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-2xl text-white flex items-center justify-center gap-3 mb-3">
+              <Zap className="h-6 w-6 text-yellow-400" />
               What is Passport Pals?
-              <Star className="h-8 w-8 text-yellow-400" />
+              <Star className="h-5 w-5 text-yellow-400" />
             </CardTitle>
-            <CardDescription className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <CardDescription className="text-base text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Passport Pals is more than just a social network - it's your bridge to belonging anywhere in the world. 
               We understand the unique challenges of living away from home and have created a platform that brings your community to you.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-8 pb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <CardContent className="px-6 pb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-400" />
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
                   Why Choose Us?
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-                      <p className="text-gray-300">{benefit}</p>
+                    <div key={index} className="flex items-start gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
+                      <p className="text-gray-300 text-sm">{benefit}</p>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {features.map((feature, index) => (
-                  <div key={index} className="animated-card p-6 hover:scale-105 transition-all duration-300">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mb-4`}>
-                      <feature.icon className="h-6 w-6 text-white" />
+                  <div 
+                    key={index} 
+                    className="animated-card p-4 hover:scale-105 transition-all duration-300 cursor-pointer"
+                    onClick={() => navigate(feature.page)}
+                  >
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mb-3`}>
+                      <feature.icon className="h-5 w-5 text-white" />
                     </div>
-                    <h4 className="text-lg font-semibold text-white mb-2">{feature.title}</h4>
-                    <p className="text-gray-300 text-sm">{feature.description}</p>
+                    <h4 className="text-base font-semibold text-white mb-2">{feature.title}</h4>
+                    <p className="text-gray-300 text-xs">{feature.description}</p>
                   </div>
                 ))}
               </div>
@@ -211,19 +247,19 @@ const HomePage = () => {
 
         {/* Welcome Message for Logged In Users */}
         {user && (
-          <Card className="glass-card mb-16 hover:shadow-2xl transition-all duration-300 border-0">
+          <Card className="glass-card mb-12 hover:shadow-2xl transition-all duration-300 border-0">
             <CardHeader>
-              <CardTitle className="text-3xl text-white flex items-center gap-4">
-                <Users className="h-8 w-8 text-blue-400" />
+              <CardTitle className="text-xl text-white flex items-center gap-3">
+                <Users className="h-6 w-6 text-blue-400" />
                 Welcome back, {user.name}!
-                <MapPin className="h-6 w-6 text-green-400" />
+                <MapPin className="h-5 w-5 text-green-400" />
               </CardTitle>
-              <CardDescription className="text-xl text-gray-300">
+              <CardDescription className="text-base text-gray-300">
                 Your global community is waiting to connect with you
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-6">
+              <div className="flex flex-wrap gap-4">
                 <Button 
                   onClick={() => navigate('/profile')}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white btn-animated border-0"
@@ -244,36 +280,36 @@ const HomePage = () => {
         {/* Featured Communities */}
         <Card className="glass-card hover:shadow-2xl transition-all duration-300 border-0">
           <CardHeader>
-            <CardTitle className="text-white text-3xl flex items-center gap-4 mb-4">
-              <Globe className="h-8 w-8 text-blue-400" />
+            <CardTitle className="text-white text-xl flex items-center gap-3 mb-3">
+              <Globe className="h-6 w-6 text-blue-400" />
               Featured Communities
-              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">Active</Badge>
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs">Active</Badge>
             </CardTitle>
-            <CardDescription className="text-xl text-gray-300">
+            <CardDescription className="text-base text-gray-300">
               Popular communities from around the world
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {featuredCommunities.map((community, index) => (
                 <div
                   key={index}
-                  className="animated-card p-8 hover:scale-105 transition-all duration-300 hover:shadow-xl"
+                  className="animated-card p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-6">
-                      <div className="text-5xl">{community.flag}</div>
+                    <div className="flex items-center space-x-4">
+                      <div className="text-3xl">{community.flag}</div>
                       <div>
-                        <h3 className="font-semibold text-white text-xl mb-2">{community.name}</h3>
-                        <div className="flex items-center space-x-2 text-gray-300 mb-3">
-                          <MapPin className="h-4 w-4" />
-                          <span>{community.location}</span>
+                        <h3 className="font-semibold text-white text-base mb-1">{community.name}</h3>
+                        <div className="flex items-center space-x-1 text-gray-300 mb-2">
+                          <MapPin className="h-3 w-3" />
+                          <span className="text-xs">{community.location}</span>
                         </div>
-                        <div className="flex items-center space-x-3">
-                          <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0">
+                        <div className="flex items-center space-x-2">
+                          <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 text-xs">
                             {community.members.toLocaleString()} members
                           </Badge>
-                          <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">
+                          <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs">
                             {getTypeIcon(community.type)}
                           </Badge>
                         </div>
@@ -281,6 +317,7 @@ const HomePage = () => {
                     </div>
                     <Button 
                       onClick={() => navigate('/search')}
+                      size="sm"
                       className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white btn-animated border-0"
                     >
                       Join Community

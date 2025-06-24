@@ -44,19 +44,19 @@ const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white/95 backdrop-blur-md shadow-2xl border border-white/20">
+    <Card className="w-full max-w-md mx-auto glass-card shadow-2xl border-0">
       <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
           Welcome to Passport Pals
         </CardTitle>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-gray-300">
           Sign in to connect with your community
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="email" className="text-sm font-medium text-gray-200">
               Email
             </Label>
             <div className="relative">
@@ -67,14 +67,14 @@ const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-white/50 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                className="pl-10 bg-slate-800/50 border-blue-500/30 focus:border-blue-400 focus:ring-blue-400 text-white placeholder-gray-400"
                 required
               />
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="password" className="text-sm font-medium text-gray-200">
               Password
             </Label>
             <div className="relative">
@@ -85,13 +85,13 @@ const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 bg-white/50 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                className="pl-10 pr-10 bg-slate-800/50 border-blue-500/30 focus:border-blue-400 focus:ring-blue-400 text-white placeholder-gray-400"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-3 text-gray-400 hover:text-gray-200 transition-colors"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -108,11 +108,11 @@ const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
         </form>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-300">
             Don't have an account?{' '}
             <button
               onClick={onSwitchToRegister}
-              className="text-purple-600 hover:text-purple-500 font-medium transition-colors hover:underline"
+              className="text-purple-400 hover:text-purple-300 font-medium transition-colors hover:underline"
             >
               Sign up here
             </button>
