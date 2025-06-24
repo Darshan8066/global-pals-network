@@ -142,7 +142,7 @@ const SearchPage = () => {
                   <SelectItem value="all">All Countries</SelectItem>
                   <SelectItem value="India">🇮🇳 India</SelectItem>
                   <SelectItem value="Pakistan">🇵🇰 Pakistan</SelectItem>
-                  <Select value="Bangladesh">🇧🇩 Bangladesh</SelectItem>
+                  <SelectItem value="Bangladesh">🇧🇩 Bangladesh</SelectItem>
                 </SelectContent>
               </Select>
             </div>
