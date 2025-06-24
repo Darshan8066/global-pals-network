@@ -14,13 +14,22 @@ import {
   Shield,
   MessageCircle,
   Globe,
-  Building
+  Building,
+  Heart,
+  UserPlus
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const SearchPage = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState('');
   const [filterCountry, setFilterCountry] = useState('');
+  
+  // State for button interactions
+  const [connectingUsers, setConnectingUsers] = useState<Set<string>>(new Set());
+  const [connectedUsers, setConnectedUsers] = useState<Set<string>>(new Set());
+  const [messagingUsers, setMessagingUsers] = useState<Set<string>>(new Set());
 
   const mockUsers = [
     {
@@ -75,58 +84,90 @@ const SearchPage = () => {
     return matchesSearch && matchesRole && matchesCountry;
   });
 
+  const handleConnect = (userId: string) => {
+    setConnectingUsers(prev => new Set(prev).add(userId));
+    
+    // Simulate connection process
+    setTimeout(() => {
+      setConnectingUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
+      setConnectedUsers(prev => new Set(prev).add(userId));
+    }, 1000);
+  };
+
+  const handleMessage = (userId: string) => {
+    setMessagingUsers(prev => new Set(prev).add(userId));
+    
+    // Simulate message process and navigate to chat
+    setTimeout(() => {
+      setMessagingUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
+      navigate('/chat');
+    }, 800);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 relative overflow-hidden pb-20">
-      {/* Subtle background elements */}
+    <div className="min-h-screen gradient-bg relative overflow-hidden pb-20">
+      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-blue-200 rounded-full opacity-20 float-animation"></div>
-        <div className="absolute top-40 right-40 w-24 h-24 bg-green-200 rounded-full opacity-20 float-animation" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-20 left-40 w-28 h-28 bg-blue-300 rounded-full opacity-20 float-animation" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full float-animation blur-xl"></div>
+        <div className="absolute top-40 right-40 w-24 h-24 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full drift-animation blur-xl" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-20 left-40 w-28 h-28 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full float-animation blur-xl" style={{animationDelay: '2s'}}></div>
+        
+        {/* Floating search icons */}
+        <div className="absolute top-32 right-32 text-4xl opacity-10 bounce-gentle">🔍</div>
+        <div className="absolute bottom-40 left-20 text-5xl opacity-10 float-animation" style={{animationDelay: '1.5s'}}>👥</div>
       </div>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
-        <div className="mb-8 text-center slide-in">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="relative">
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-3 shadow-xl">
-                <Search className="h-10 w-10 text-white" />
+        <div className="mb-12 text-center">
+          <div className="flex items-center justify-center gap-6 mb-8">
+            <div className="relative pulse-glow">
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-4 shadow-2xl">
+                <Search className="h-12 w-12 text-white" />
               </div>
-              <MapPin className="h-4 w-4 text-yellow-500 absolute -top-1 -right-1 animate-pulse" />
+              <MapPin className="h-6 w-6 text-yellow-400 absolute -top-1 -right-1 bounce-gentle" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
               Find Your Community
             </h1>
-            <Globe className="h-8 w-8 text-blue-600" />
+            <Globe className="h-10 w-10 text-blue-400 bounce-gentle" />
           </div>
-          <p className="text-gray-700 text-xl">
+          <p className="text-gray-200 text-2xl">
             Connect with people from your homeland living around the world
           </p>
         </div>
 
         {/* Search and Filters */}
-        <Card className="bg-white/80 backdrop-blur-sm shadow-xl mb-8 border border-blue-200">
+        <Card className="glass-card shadow-2xl mb-12 border-0 hover:shadow-3xl transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-gray-800 flex items-center gap-2">
-              <Filter className="h-5 w-5 text-blue-600" />
+            <CardTitle className="text-white flex items-center gap-3 text-2xl">
+              <Filter className="h-6 w-6 text-blue-400" />
               Search & Filter
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="md:col-span-2">
                 <Input
                   placeholder="Search by name, occupation, or location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="bg-slate-800/50 border-blue-500/30 focus:border-blue-400 focus:ring-blue-400 text-white placeholder-gray-400 text-lg py-3"
                 />
               </div>
               
               <Select value={filterRole} onValueChange={setFilterRole}>
-                <SelectTrigger className="bg-white border-blue-300 focus:border-blue-500">
+                <SelectTrigger className="bg-slate-800/50 border-blue-500/30 focus:border-blue-400 text-white">
                   <SelectValue placeholder="Filter by role" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border-blue-300">
+                <SelectContent className="bg-slate-800 border-blue-500/30">
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="student">🎓 Student</SelectItem>
                   <SelectItem value="artist">🎨 Artist</SelectItem>
@@ -135,10 +176,10 @@ const SearchPage = () => {
               </Select>
               
               <Select value={filterCountry} onValueChange={setFilterCountry}>
-                <SelectTrigger className="bg-white border-blue-300 focus:border-blue-500">
+                <SelectTrigger className="bg-slate-800/50 border-blue-500/30 focus:border-blue-400 text-white">
                   <SelectValue placeholder="Filter by country" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border-blue-300">
+                <SelectContent className="bg-slate-800 border-blue-500/30">
                   <SelectItem value="all">All Countries</SelectItem>
                   <SelectItem value="India">🇮🇳 India</SelectItem>
                   <SelectItem value="Pakistan">🇵🇰 Pakistan</SelectItem>
@@ -150,88 +191,118 @@ const SearchPage = () => {
         </Card>
 
         {/* Results */}
-        <Card className="bg-white/80 backdrop-blur-sm shadow-xl border border-blue-200">
+        <Card className="glass-card shadow-2xl border-0">
           <CardHeader>
-            <CardTitle className="text-gray-800 text-2xl flex items-center gap-3">
-              <Users className="h-6 w-6 text-blue-600" />
+            <CardTitle className="text-white text-3xl flex items-center gap-4">
+              <Users className="h-8 w-8 text-blue-400" />
               Found {filteredUsers.length} People
-              <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">Active</Badge>
             </CardTitle>
-            <CardDescription className="text-gray-600 text-lg">
+            <CardDescription className="text-gray-300 text-xl">
               Connect with amazing people from your community
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {filteredUsers.map((person) => (
                 <div
                   key={person.id}
-                  className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-102"
+                  className="animated-card p-8 hover:scale-102 transition-all duration-300 hover:shadow-2xl shimmer-effect"
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <Avatar className="h-16 w-16 border-3 border-white shadow-lg">
-                        <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white text-xl font-bold">
-                          {person.name.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      {person.isVerified && (
-                        <Shield className="h-5 w-5 text-green-500 absolute -bottom-1 -right-1 bg-white rounded-full p-0.5" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-semibold text-gray-800 text-xl">{person.name}</h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-6">
+                      <div className="relative">
+                        <Avatar className="h-20 w-20 border-4 border-blue-400/50 shadow-xl">
+                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-2xl font-bold">
+                            {person.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
                         {person.isVerified && (
-                          <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-300">
-                            <Shield className="h-3 w-3 mr-1" />
-                            Verified
-                          </Badge>
+                          <Shield className="h-6 w-6 text-green-400 absolute -bottom-1 -right-1 bg-slate-800 rounded-full p-1" />
                         )}
                       </div>
-                      <p className="text-gray-700 mb-1 flex items-center gap-1">
-                        {person.role === 'student' ? '🎓' : person.role === 'artist' ? '🎨' : '💼'} 
-                        {person.occupation}
-                      </p>
-                      <div className="flex items-center space-x-2 text-gray-600 mb-2">
-                        <MapPin className="h-4 w-4" />
-                        <span className="text-sm">From {person.country} • Now in {person.currentLocation}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {person.interests.map((interest, index) => (
-                          <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-300">
-                            {interest}
-                          </Badge>
-                        ))}
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="font-semibold text-white text-2xl">{person.name}</h3>
+                          {person.isVerified && (
+                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">
+                              <Shield className="h-3 w-3 mr-1" />
+                              Verified
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-gray-300 mb-2 flex items-center gap-2 text-lg">
+                          {person.role === 'student' ? '🎓' : person.role === 'artist' ? '🎨' : '💼'} 
+                          {person.occupation}
+                        </p>
+                        <div className="flex items-center space-x-2 text-gray-400 mb-4">
+                          <MapPin className="h-5 w-5" />
+                          <span>From {person.country} • Now in {person.currentLocation}</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {person.interests.map((interest, index) => (
+                            <Badge key={index} className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/30">
+                              {interest}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    <Button 
-                      size="sm"
-                      className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white"
-                    >
-                      <Users className="h-4 w-4 mr-1" />
-                      Connect
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="border-blue-600 text-blue-700 hover:bg-blue-50"
-                    >
-                      <MessageCircle className="h-4 w-4 mr-1" />
-                      Message
-                    </Button>
+                    <div className="flex flex-col space-y-4">
+                      <Button 
+                        onClick={() => handleConnect(person.id)}
+                        disabled={connectingUsers.has(person.id) || connectedUsers.has(person.id)}
+                        className={`btn-animated border-0 ${
+                          connectedUsers.has(person.id)
+                            ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
+                            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                        } text-white`}
+                      >
+                        {connectingUsers.has(person.id) ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Connecting...
+                          </>
+                        ) : connectedUsers.has(person.id) ? (
+                          <>
+                            <Heart className="h-4 w-4 mr-2 fill-current" />
+                            Connected
+                          </>
+                        ) : (
+                          <>
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Connect
+                          </>
+                        )}
+                      </Button>
+                      <Button 
+                        onClick={() => handleMessage(person.id)}
+                        disabled={messagingUsers.has(person.id)}
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white btn-animated border-0"
+                      >
+                        {messagingUsers.has(person.id) ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Opening...
+                          </>
+                        ) : (
+                          <>
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Message
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
             
             {filteredUsers.length === 0 && (
-              <div className="text-center py-12">
-                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 text-lg">No people found matching your criteria</p>
-                <p className="text-gray-500">Try adjusting your search or filters</p>
+              <div className="text-center py-20">
+                <Search className="h-24 w-24 text-gray-500 mx-auto mb-6" />
+                <p className="text-gray-300 text-2xl mb-2">No people found matching your criteria</p>
+                <p className="text-gray-400 text-lg">Try adjusting your search or filters</p>
               </div>
             )}
           </CardContent>
