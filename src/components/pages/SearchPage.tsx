@@ -13,8 +13,8 @@ import {
   MapPin, 
   Shield,
   MessageCircle,
-  Heart,
-  Sparkles
+  Globe,
+  Building
 } from 'lucide-react';
 
 const SearchPage = () => {
@@ -76,36 +76,38 @@ const SearchPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 relative overflow-hidden">
-      {/* Animated background elements */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 relative overflow-hidden pb-20">
+      {/* Subtle background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-yellow-300 rounded-full opacity-10 animate-bounce"></div>
-        <div className="absolute top-40 right-40 w-24 h-24 bg-green-300 rounded-full opacity-10 animate-pulse"></div>
-        <div className="absolute bottom-20 left-40 w-28 h-28 bg-red-300 rounded-full opacity-10 animate-bounce delay-1000"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-blue-200 rounded-full opacity-20 float-animation"></div>
+        <div className="absolute top-40 right-40 w-24 h-24 bg-green-200 rounded-full opacity-20 float-animation" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-20 left-40 w-28 h-28 bg-blue-300 rounded-full opacity-20 float-animation" style={{animationDelay: '2s'}}></div>
       </div>
 
       <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
-        <div className="mb-8 text-center">
-          <div className="flex items-center justify-center gap-4 mb-4">
+        <div className="mb-8 text-center slide-in">
+          <div className="flex items-center justify-center gap-4 mb-6">
             <div className="relative">
-              <Search className="h-12 w-12 text-white drop-shadow-lg transform hover:rotate-12 transition-transform duration-500" />
-              <Sparkles className="h-4 w-4 text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-3 shadow-xl">
+                <Search className="h-10 w-10 text-white" />
+              </div>
+              <MapPin className="h-4 w-4 text-yellow-500 absolute -top-1 -right-1 animate-pulse" />
             </div>
-            <h1 className="text-4xl font-bold text-white drop-shadow-lg">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
               Find Your Community
             </h1>
-            <Heart className="h-8 w-8 text-red-300 animate-pulse" />
+            <Globe className="h-8 w-8 text-blue-600" />
           </div>
-          <p className="text-white/90 text-xl drop-shadow">
+          <p className="text-gray-700 text-xl">
             Connect with people from your homeland living around the world
           </p>
         </div>
 
         {/* Search and Filters */}
-        <Card className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl mb-8">
+        <Card className="bg-white/80 backdrop-blur-sm shadow-xl mb-8 border border-blue-200">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Filter className="h-5 w-5" />
+            <CardTitle className="text-gray-800 flex items-center gap-2">
+              <Filter className="h-5 w-5 text-blue-600" />
               Search & Filter
             </CardTitle>
           </CardHeader>
@@ -116,15 +118,15 @@ const SearchPage = () => {
                   placeholder="Search by name, occupation, or location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  className="bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               
               <Select value={filterRole} onValueChange={setFilterRole}>
-                <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                <SelectTrigger className="bg-white border-blue-300 focus:border-blue-500">
                   <SelectValue placeholder="Filter by role" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white border-blue-300">
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="student">🎓 Student</SelectItem>
                   <SelectItem value="artist">🎨 Artist</SelectItem>
@@ -133,14 +135,14 @@ const SearchPage = () => {
               </Select>
               
               <Select value={filterCountry} onValueChange={setFilterCountry}>
-                <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                <SelectTrigger className="bg-white border-blue-300 focus:border-blue-500">
                   <SelectValue placeholder="Filter by country" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white border-blue-300">
                   <SelectItem value="all">All Countries</SelectItem>
                   <SelectItem value="India">🇮🇳 India</SelectItem>
                   <SelectItem value="Pakistan">🇵🇰 Pakistan</SelectItem>
-                  <SelectItem value="Bangladesh">🇧🇩 Bangladesh</SelectItem>
+                  <Select value="Bangladesh">🇧🇩 Bangladesh</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -148,14 +150,14 @@ const SearchPage = () => {
         </Card>
 
         {/* Results */}
-        <Card className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl">
+        <Card className="bg-white/80 backdrop-blur-sm shadow-xl border border-blue-200">
           <CardHeader>
-            <CardTitle className="text-white text-2xl flex items-center gap-3">
-              <Users className="h-6 w-6" />
+            <CardTitle className="text-gray-800 text-2xl flex items-center gap-3">
+              <Users className="h-6 w-6 text-blue-600" />
               Found {filteredUsers.length} People
-              <Sparkles className="h-5 w-5 text-yellow-300 animate-pulse" />
+              <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
             </CardTitle>
-            <CardDescription className="text-white/80 text-lg">
+            <CardDescription className="text-gray-600 text-lg">
               Connect with amazing people from your community
             </CardDescription>
           </CardHeader>
@@ -164,39 +166,40 @@ const SearchPage = () => {
               {filteredUsers.map((person) => (
                 <div
                   key={person.id}
-                  className="flex items-center justify-between p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-102"
+                  className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:scale-102"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="relative">
-                      <Avatar className="h-16 w-16 border-2 border-white shadow-lg">
-                        <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl">
+                      <Avatar className="h-16 w-16 border-3 border-white shadow-lg">
+                        <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white text-xl font-bold">
                           {person.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       {person.isVerified && (
-                        <Shield className="h-5 w-5 text-green-400 absolute -bottom-1 -right-1 bg-white rounded-full p-0.5" />
+                        <Shield className="h-5 w-5 text-green-500 absolute -bottom-1 -right-1 bg-white rounded-full p-0.5" />
                       )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
-                        <h3 className="font-semibold text-white text-xl">{person.name}</h3>
+                        <h3 className="font-semibold text-gray-800 text-xl">{person.name}</h3>
                         {person.isVerified && (
-                          <Badge variant="secondary" className="text-xs bg-green-500/30 text-green-100 border-green-400/50">
+                          <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-300">
                             <Shield className="h-3 w-3 mr-1" />
                             Verified
                           </Badge>
                         )}
                       </div>
-                      <p className="text-white/90 mb-1">
-                        {person.role === 'student' ? '🎓' : person.role === 'artist' ? '🎨' : '💼'} {person.occupation}
+                      <p className="text-gray-700 mb-1 flex items-center gap-1">
+                        {person.role === 'student' ? '🎓' : person.role === 'artist' ? '🎨' : '💼'} 
+                        {person.occupation}
                       </p>
-                      <div className="flex items-center space-x-2 text-white/80 mb-2">
+                      <div className="flex items-center space-x-2 text-gray-600 mb-2">
                         <MapPin className="h-4 w-4" />
                         <span className="text-sm">From {person.country} • Now in {person.currentLocation}</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {person.interests.map((interest, index) => (
-                          <Badge key={index} variant="outline" className="text-xs bg-white/20 text-white border-white/30">
+                          <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-300">
                             {interest}
                           </Badge>
                         ))}
@@ -206,7 +209,7 @@ const SearchPage = () => {
                   <div className="flex flex-col space-y-2">
                     <Button 
                       size="sm"
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                      className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white"
                     >
                       <Users className="h-4 w-4 mr-1" />
                       Connect
@@ -214,7 +217,7 @@ const SearchPage = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                      className="border-blue-600 text-blue-700 hover:bg-blue-50"
                     >
                       <MessageCircle className="h-4 w-4 mr-1" />
                       Message
@@ -226,9 +229,9 @@ const SearchPage = () => {
             
             {filteredUsers.length === 0 && (
               <div className="text-center py-12">
-                <Search className="h-16 w-16 text-white/50 mx-auto mb-4" />
-                <p className="text-white/70 text-lg">No people found matching your criteria</p>
-                <p className="text-white/50">Try adjusting your search or filters</p>
+                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600 text-lg">No people found matching your criteria</p>
+                <p className="text-gray-500">Try adjusting your search or filters</p>
               </div>
             )}
           </CardContent>
