@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import AuthPage from "./components/auth/AuthPage";
+import ResetPasswordPage from "./components/auth/ResetPasswordPage";
 import HomePage from "./components/pages/HomePage";
 import SearchPage from "./components/pages/SearchPage";
 import ChatPage from "./components/pages/ChatPage";
@@ -34,7 +35,12 @@ const AppContent = () => {
   }
 
   if (!isAuthenticated) {
-    return <AuthPage />;
+    return (
+      <Routes>
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="*" element={<AuthPage />} />
+      </Routes>
+    );
   }
 
   return (
