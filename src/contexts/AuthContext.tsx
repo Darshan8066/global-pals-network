@@ -8,7 +8,7 @@ export interface Profile {
   user_id: string;
   name: string;
   email: string;
-  role: 'student' | 'artist' | 'businessperson' | 'professional' | 'freelancer' | 'entrepreneur' | 'researcher' | 'teacher' | 'engineer' | 'designer';
+  role: string; // Changed from union type to string to match database
   country: string;
   city: string;
   occupation?: string;
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
           setAuthState({
             user: session.user,
-            profile,
+            profile: profile as Profile,
             session,
             isAuthenticated: true,
             isLoading: false,
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .then(({ data: profile }) => {
             setAuthState({
               user: session.user,
-              profile,
+              profile: profile as Profile,
               session,
               isAuthenticated: true,
               isLoading: false,
