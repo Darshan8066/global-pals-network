@@ -10,16 +10,29 @@ import HomePage from "./components/pages/HomePage";
 import SearchPage from "./components/pages/SearchPage";
 import ChatPage from "./components/pages/ChatPage";
 import StatsPage from "./components/pages/StatsPage";
+import ActiveMembersPage from "./components/pages/ActiveMembersPage";
+import CountriesPage from "./components/pages/CountriesPage";
+import NewConnectionsPage from "./components/pages/NewConnectionsPage";
+import SmartDiscoveryPage from "./components/pages/SmartDiscoveryPage";
+import GlobalNetworkPage from "./components/pages/GlobalNetworkPage";
 import ProfilePage from "./components/profile/ProfilePage";
 import MultiStepEditProfile from "./components/profile/MultiStepEditProfile";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
-  // Always show AuthPage for unauthenticated users
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 flex items-center justify-center">
+        <div className="text-white text-2xl font-bold">Loading...</div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return <AuthPage />;
   }
@@ -32,10 +45,16 @@ const AppContent = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/active-members" element={<ActiveMembersPage />} />
+        <Route path="/countries" element={<CountriesPage />} />
+        <Route path="/new-connections" element={<NewConnectionsPage />} />
+        <Route path="/smart-discovery" element={<SmartDiscoveryPage />} />
+        <Route path="/global-network" element={<GlobalNetworkPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<MultiStepEditProfile />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
+      <Footer />
     </div>
   );
 };

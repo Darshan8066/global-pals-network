@@ -1,333 +1,278 @@
-
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Globe, 
   Users, 
+  MapPin, 
   MessageCircle, 
-  Search,
-  MapPin,
-  TrendingUp,
-  Plane,
-  Building,
-  GraduationCap,
-  Heart,
-  Shield,
-  Zap,
+  TrendingUp, 
   Star,
-  ArrowRight,
-  CheckCircle
+  Globe,
+  Shield,
+  Heart,
+  Sparkles,
+  Zap,
+  Award,
+  Camera,
+  Coffee,
+  Plane
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ProfileCompletionBanner from '../ProfileCompletionBanner';
 
 const HomePage = () => {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const navigate = useNavigate();
 
-  const quickStats = [
-    { 
-      label: 'Active Members', 
-      value: '12.5K', 
-      icon: Users, 
-      color: 'from-blue-600 to-blue-800',
-      page: '/search' 
-    },
-    { 
-      label: 'Countries', 
-      value: '85', 
-      icon: Globe, 
-      color: 'from-green-600 to-green-800',
-      page: '/search' 
-    },
-    { 
-      label: 'Messages Today', 
-      value: '3.2K', 
-      icon: MessageCircle, 
-      color: 'from-purple-600 to-purple-800',
-      page: '/chat' 
-    },
-    { 
-      label: 'New Connections', 
-      value: '156', 
-      icon: TrendingUp, 
-      color: 'from-emerald-600 to-emerald-800',
-      page: '/search' 
-    }
+  const stats = [
+    { icon: Users, label: 'Active Members', value: '45,282', color: 'text-blue-500' },
+    { icon: MapPin, label: 'Countries', value: '195', color: 'text-green-500' },
+    { icon: MessageCircle, label: 'Messages Today', value: '12,847', color: 'text-purple-500' },
+    { icon: TrendingUp, label: 'New Connections', value: '1,203', color: 'text-pink-500' }
   ];
 
   const features = [
     {
-      icon: Search,
-      title: 'Smart Discovery',
-      description: 'Find people from your homeland with our advanced search and filtering system.',
-      color: 'from-blue-500 to-cyan-500',
-      page: '/search'
-    },
-    {
       icon: Shield,
       title: 'Verified Profiles',
-      description: 'Connect with confidence through our secure verification process.',
-      color: 'from-green-500 to-emerald-500',
-      page: '/profile'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Real-time Chat',
-      description: 'Instant messaging with translation support for seamless communication.',
-      color: 'from-purple-500 to-pink-500',
-      page: '/chat'
+      description: 'All members verify their identity with government documents for your safety',
+      color: 'bg-green-500'
     },
     {
       icon: Globe,
       title: 'Global Network',
-      description: 'Join communities across 85+ countries and expand your global network.',
-      color: 'from-orange-500 to-red-500',
-      page: '/search'
+      description: 'Connect with people from your home country living in 195+ countries worldwide',
+      color: 'bg-blue-500'
+    },
+    {
+      icon: MessageCircle,
+      title: 'Real-time Chat',
+      description: 'Instant messaging with verified members, including group chats and communities',
+      color: 'bg-purple-500'
+    },
+    {
+      icon: Star,
+      title: 'Smart Discovery',
+      description: 'AI-powered matching to find the most relevant connections based on your profile',
+      color: 'bg-yellow-500'
     }
   ];
 
-  const benefits = [
-    'Connect with people from your homeland living worldwide',
-    'Share experiences and cultural traditions',
-    'Build professional and personal networks',
-    'Find mentors and career opportunities',
-    'Get local insights from fellow expatriates',
-    'Maintain cultural connections away from home'
-  ];
-
-  const featuredCommunities = [
-    { name: 'Toronto Indian Students', members: 2400, flag: '🇮🇳', location: 'Toronto, Canada', type: 'student' },
-    { name: 'Berlin Tech Professionals', members: 1800, flag: '🇩🇪', location: 'Berlin, Germany', type: 'professional' },
-    { name: 'London Creative Hub', members: 950, flag: '🇬🇧', location: 'London, UK', type: 'artist' },
-    { name: 'Sydney Business Network', members: 1200, flag: '🇦🇺', location: 'Sydney, Australia', type: 'business' }
-  ];
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'student': return <GraduationCap className="h-4 w-4" />;
-      case 'professional': return <Building className="h-4 w-4" />;
-      case 'artist': return <Plane className="h-4 w-4" />;
-      default: return <Users className="h-4 w-4" />;
+  const successStories = [
+    {
+      name: 'Priya & Raj',
+      story: 'Met through Passport Pals and started a successful tech company in Toronto',
+      image: '👩‍💻👨‍💻',
+      location: 'Toronto, Canada'
+    },
+    {
+      name: 'Ahmed & Team',
+      story: 'Found roommates and built a strong support network in Dubai',
+      image: '🏠👥',
+      location: 'Dubai, UAE'
+    },
+    {
+      name: 'Maria\'s Journey',
+      story: 'Connected with artists and now exhibits her work in NYC galleries',
+      image: '🎨🏛️',
+      location: 'New York, USA'
     }
-  };
+  ];
+
+  const communityHighlights = [
+    { icon: Award, text: 'Top-rated community platform for international connections' },
+    { icon: Heart, text: '98% user satisfaction rate with meaningful connections made' },
+    { icon: Zap, text: 'Average response time: 30 minutes for verified members' },
+    { icon: Camera, text: 'Share your journey with photo stories and cultural exchanges' }
+  ];
 
   return (
-    <div className="min-h-screen gradient-bg relative overflow-hidden pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 relative overflow-hidden pb-20">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-40 h-40 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full float-animation blur-xl"></div>
-        <div className="absolute top-60 right-32 w-32 h-32 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full drift-animation blur-xl" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-40 left-32 w-36 h-36 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full float-animation blur-xl" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-60 right-20 w-44 h-44 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full drift-animation blur-xl" style={{animationDelay: '0.5s'}}></div>
-        
-        {/* Floating passport icons */}
-        <div className="absolute top-32 right-64 text-6xl opacity-10 bounce-gentle">🛂</div>
-        <div className="absolute bottom-32 left-64 text-5xl opacity-10 float-animation" style={{animationDelay: '1.5s'}}>✈️</div>
-        <div className="absolute top-96 left-32 text-4xl opacity-10 drift-animation" style={{animationDelay: '3s'}}>🌍</div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-yellow-300 rounded-full opacity-10 animate-bounce"></div>
+        <div className="absolute top-40 right-40 w-24 h-24 bg-green-300 rounded-full opacity-10 animate-pulse"></div>
+        <div className="absolute bottom-20 left-40 w-28 h-28 bg-red-300 rounded-full opacity-10 animate-bounce delay-1000"></div>
+        <div className="absolute bottom-40 right-20 w-20 h-20 bg-blue-300 rounded-full opacity-10 animate-pulse delay-500"></div>
       </div>
 
-      <div className="container mx-auto px-4 py-6 max-w-7xl relative z-10">
-        {/* Hero Section */}
+      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+        {/* Profile Completion Banner */}
+        {profile && (
+          <ProfileCompletionBanner 
+            profileCompleted={profile.profile_completed || false}
+            isVerified={profile.is_verified}
+          />
+        )}
+
+        {/* Welcome Section */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="relative pulse-glow">
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-4 shadow-2xl">
-                <Globe className="h-12 w-12 text-white" />
-              </div>
-              <MapPin className="h-5 w-5 text-yellow-400 absolute -top-1 -right-1 bounce-gentle" />
+            <div className="relative">
+              <Globe className="h-16 w-16 text-white drop-shadow-lg transform hover:rotate-12 transition-transform duration-500" />
+              <Sparkles className="h-6 w-6 text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
             </div>
-            <div className="text-center">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl mb-2">
-                Passport Pals
-              </h1>
-              <p className="text-lg text-blue-200 font-medium">Your Global Community Connection</p>
-            </div>
+            <h1 className="text-6xl font-bold text-white drop-shadow-lg">
+              Welcome to Passport Pals
+            </h1>
+            <Heart className="h-12 w-12 text-red-300 animate-pulse" />
           </div>
-          
-          <div className="max-w-3xl mx-auto mb-8">
-            <p className="text-xl text-gray-200 mb-4 leading-relaxed">
-              Connect with your homeland community living around the world
-            </p>
-            <p className="text-base text-gray-300 mb-6 leading-relaxed">
-              Passport Pals is the premier platform for expatriates, students, and professionals to find their community abroad. 
-              Whether you're seeking professional networking, cultural connections, or simply want to meet people who share your background, 
-              we bridge the gap between home and your new destination.
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <Button 
-              onClick={() => navigate('/search')}
-              className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-6 py-3 text-lg shadow-2xl btn-animated border-0"
-            >
-              <Search className="h-5 w-5 mr-2" />
-              Find Your Community
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-            <Button 
-              onClick={() => navigate('/chat')}
-              className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white px-6 py-3 text-lg shadow-2xl btn-animated border-0"
-            >
-              <MessageCircle className="h-5 w-5 mr-2" />
-              Start Connecting
-              <Heart className="h-4 w-4 ml-2" />
-            </Button>
-          </div>
+          <p className="text-2xl text-white/90 mb-4 drop-shadow">
+            Your global community awaits - Connect, Share, Grow Together
+          </p>
+          <p className="text-lg text-white/80 max-w-3xl mx-auto">
+            Join thousands of verified international professionals, students, and entrepreneurs 
+            who have found their community abroad through Passport Pals.
+          </p>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {quickStats.map((stat, index) => (
-            <Card 
-              key={index} 
-              className="animated-card hover:scale-105 transition-all duration-300 hover:shadow-2xl border-0 shimmer-effect cursor-pointer"
-              onClick={() => navigate(stat.page)}
-            >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          {stats.map((stat, index) => (
+            <Card key={index} className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105">
               <CardContent className="p-6 text-center">
-                <div className="mb-4">
-                  <stat.icon className="h-12 w-12 mx-auto text-blue-300" />
-                </div>
-                <p className="text-2xl font-bold mb-1 text-white">{stat.value}</p>
-                <p className="text-sm text-gray-300">{stat.label}</p>
+                <stat.icon className={`h-10 w-10 ${stat.color} mx-auto mb-3`} />
+                <h3 className="text-3xl font-bold text-white mb-1">{stat.value}</h3>
+                <p className="text-white/80 text-sm">{stat.label}</p>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* What is Passport Pals */}
-        <Card className="glass-card mb-12 hover:shadow-2xl transition-all duration-300 border-0">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl text-white flex items-center justify-center gap-3 mb-3">
-              <Zap className="h-6 w-6 text-yellow-400" />
-              What is Passport Pals?
-              <Star className="h-5 w-5 text-yellow-400" />
-            </CardTitle>
-            <CardDescription className="text-base text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Passport Pals is more than just a social network - it's your bridge to belonging anywhere in the world. 
-              We understand the unique challenges of living away from home and have created a platform that brings your community to you.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="px-6 pb-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  Why Choose Us?
-                </h3>
-                <div className="space-y-3">
-                  {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <p className="text-gray-300 text-sm">{benefit}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {features.map((feature, index) => (
-                  <div 
-                    key={index} 
-                    className="animated-card p-4 hover:scale-105 transition-all duration-300 cursor-pointer"
-                    onClick={() => navigate(feature.page)}
-                  >
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mb-3`}>
-                      <feature.icon className="h-5 w-5 text-white" />
-                    </div>
-                    <h4 className="text-base font-semibold text-white mb-2">{feature.title}</h4>
-                    <p className="text-gray-300 text-xs">{feature.description}</p>
+        {/* Main Features */}
+        <div className="mb-12">
+          <h2 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-lg">
+            Why Choose Passport Pals?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <Card key={index} className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105">
+                <CardContent className="p-6">
+                  <div className={`${feature.color} w-14 h-14 rounded-full flex items-center justify-center mb-4`}>
+                    <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
-        {/* Welcome Message for Logged In Users */}
-        {user && (
-          <Card className="glass-card mb-12 hover:shadow-2xl transition-all duration-300 border-0">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-3">
-                <Users className="h-6 w-6 text-blue-400" />
-                Welcome back, {user.name}!
-                <MapPin className="h-5 w-5 text-green-400" />
-              </CardTitle>
-              <CardDescription className="text-base text-gray-300">
-                Your global community is waiting to connect with you
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-4">
-                <Button 
-                  onClick={() => navigate('/profile')}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white btn-animated border-0"
-                >
-                  View Profile
-                </Button>
+        {/* Success Stories */}
+        <div className="mb-12">
+          <h2 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-lg">
+            Success Stories from Our Community
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {successStories.map((story, index) => (
+              <Card key={index} className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">{story.image}</div>
+                  <h3 className="text-xl font-bold text-white mb-2">{story.name}</h3>
+                  <p className="text-white/80 text-sm mb-3 leading-relaxed">{story.story}</p>
+                  <Badge className="bg-white/20 text-white border-white/30">
+                    <MapPin className="h-3 w-3 mr-1" />
+                    {story.location}
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Community Highlights */}
+        <div className="mb-12">
+          <h2 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-lg">
+            Community Highlights
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {communityHighlights.map((highlight, index) => (
+              <div key={index} className="bg-white/20 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/30 flex items-center space-x-4">
+                <highlight.icon className="h-8 w-8 text-yellow-300" />
+                <p className="text-white font-medium">{highlight.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="text-center mb-12">
+          <Card className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl max-w-4xl mx-auto">
+            <CardContent className="p-8">
+              <h2 className="text-4xl font-bold text-white mb-4">Ready to Start Your Journey?</h2>
+              <p className="text-xl text-white/90 mb-6">
+                Join our global community and discover connections that will change your life abroad.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   onClick={() => navigate('/search')}
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white btn-animated border-0"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-3"
                 >
-                  Find Connections
+                  <Users className="h-5 w-5 mr-2" />
+                  Find Your Community
+                </Button>
+                <Button 
+                  onClick={() => navigate('/chat')}
+                  variant="outline"
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 text-lg px-8 py-3"
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  Start Chatting
                 </Button>
               </div>
             </CardContent>
           </Card>
-        )}
+        </div>
 
-        {/* Featured Communities */}
-        <Card className="glass-card hover:shadow-2xl transition-all duration-300 border-0">
-          <CardHeader>
-            <CardTitle className="text-white text-xl flex items-center gap-3 mb-3">
-              <Globe className="h-6 w-6 text-blue-400" />
-              Featured Communities
-              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs">Active</Badge>
-            </CardTitle>
-            <CardDescription className="text-base text-gray-300">
-              Popular communities from around the world
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {featuredCommunities.map((community, index) => (
-                <div
-                  key={index}
-                  className="animated-card p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="text-3xl">{community.flag}</div>
-                      <div>
-                        <h3 className="font-semibold text-white text-base mb-1">{community.name}</h3>
-                        <div className="flex items-center space-x-1 text-gray-300 mb-2">
-                          <MapPin className="h-3 w-3" />
-                          <span className="text-xs">{community.location}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 text-xs">
-                            {community.members.toLocaleString()} members
-                          </Badge>
-                          <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs">
-                            {getTypeIcon(community.type)}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => navigate('/search')}
-                      size="sm"
-                      className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white btn-animated border-0"
-                    >
-                      Join Community
-                    </Button>
-                  </div>
-                </div>
-              ))}
+        {/* Getting Started Guide */}
+        <div className="mb-12">
+          <h2 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-lg">
+            How It Works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="bg-white/20 backdrop-blur-md w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-white">1</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Create Your Profile</h3>
+              <p className="text-white/80">Complete your profile with verification documents for security</p>
             </div>
-          </CardContent>
-        </Card>
+            <div className="text-center">
+              <div className="bg-white/20 backdrop-blur-md w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-white">2</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Discover Connections</h3>
+              <p className="text-white/80">Use our smart search to find people from your country living abroad</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-white/20 backdrop-blur-md w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-white">3</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Start Connecting</h3>
+              <p className="text-white/80">Chat, meet, and build lasting friendships with verified members</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Info */}
+        <div className="text-center">
+          <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <Coffee className="h-8 w-8 text-white" />
+              <Plane className="h-8 w-8 text-white" />
+              <Users className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">Your Adventure Starts Here</h3>
+            <p className="text-white/80 text-lg leading-relaxed max-w-3xl mx-auto">
+              Whether you're a student looking for study groups, a professional seeking career opportunities, 
+              or an entrepreneur building your network, Passport Pals is your gateway to meaningful connections 
+              that transcend borders and cultures.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
