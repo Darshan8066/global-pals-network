@@ -1,317 +1,326 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useMemo } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, Send, Phone, Video, MoreVertical, MessageCircle, Users } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../integrations/supabase/client';
-
-interface Message {
-  id: string;
-  content: string;
-  sender_id: string;
-  receiver_id: string;
-  created_at: string;
-  is_read: boolean;
-  sender?: any;
-}
-
-interface Conversation {
-  id: string;
-  participant_1: string;
-  participant_2: string;
-  last_message_at: string;
-  other_participant?: any;
-  latest_message?: string;
-}
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { 
+  MessageCircle, 
+  Send, 
+  Search, 
+  Shield,
+  Users,
+  Heart,
+  Sparkles,
+  Clock
+} from 'lucide-react';
 
 const ChatPage = () => {
-  const { profile } = useAuth();
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedChat, setSelectedChat] = useState<string | null>('1');
   const [newMessage, setNewMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchChat, setSearchChat] = useState('');
 
-  // Demo conversations and messages for development
-  const demoConversations = [
+  const mockChats = [
     {
       id: '1',
       name: 'Priya Sharma',
       lastMessage: 'Hey! How are you settling in Toronto?',
-      time: '2 min ago',
+      timestamp: '2 min ago',
       unread: 2,
-      status: 'online',
-      country: 'India',
-      role: 'student'
+      isVerified: true,
+      isOn: true
     },
     {
       id: '2',
-      name: 'Ahmed Hassan',
-      lastMessage: 'Thanks for the advice about Dubai!',
-      time: '15 min ago',
-      unread: 0,
-      status: 'offline',
-      country: 'Egypt',
-      role: 'professional'
+      name: 'Toronto Indian Students',
+      lastMessage: 'Anyone knows good Indian restaurants near campus?',
+      timestamp: '15 min ago',
+      unread: 5,
+      isVerified: false,
+      isGroup: true,
+      isOn: false
     },
     {
       id: '3',
-      name: 'Maria Rodriguez',
-      lastMessage: 'Would love to collaborate on the art project',
-      time: '1 hour ago',
-      unread: 1,
-      status: 'online',
-      country: 'Spain',
-      role: 'artist'
+      name: 'Raj Patel',
+      lastMessage: 'Thanks for the business networking tip!',
+      timestamp: '1 hour ago',
+      unread: 0,
+      isVerified: true,
+      isOn: false
     },
     {
       id: '4',
-      name: 'Li Wei',
-      lastMessage: 'The conference was amazing! Did you attend?',
-      time: '2 hours ago',
-      unread: 0,
-      status: 'away',
-      country: 'China',
-      role: 'researcher'
+      name: 'Ananya Kumar',
+      lastMessage: 'Check out this amazing art gallery I found!',
+      timestamp: '3 hours ago',
+      unread: 1,
+      isVerified: false,
+      isOn: true
     },
     {
       id: '5',
-      name: 'Sofia Chen',
-      lastMessage: 'Great design insights! Can we schedule a call?',
-      time: '3 hours ago',
-      unread: 3,
-      status: 'online',
-      country: 'China',
-      role: 'designer'
+      name: 'Maria Rodriguez',
+      lastMessage: 'Hola! How is the weather in your city?',
+      timestamp: '5 hours ago',
+      unread: 0,
+      isVerified: true,
+      isOn: true
+    },
+    {
+      id: '6',
+      name: 'Ahmed Ali',
+      lastMessage: 'Great meeting you at the tech meetup!',
+      timestamp: '1 day ago',
+      unread: 0,
+      isVerified: true,
+      isOn: false
     }
   ];
 
-  const demoMessages = {
-    '1': [
-      { id: '1', content: 'Hi there! Welcome to Toronto!', sender: 'Priya Sharma', time: '10:00 AM', isOwn: false },
-      { id: '2', content: 'Thank you! I\'m excited to be here. Any recommendations for good places to eat?', sender: 'You', time: '10:05 AM', isOwn: true },
-      { id: '3', content: 'Absolutely! There\'s this amazing Indian restaurant called "Spice Route" downtown. You\'ll love it!', sender: 'Priya Sharma', time: '10:07 AM', isOwn: false },
-      { id: '4', content: 'That sounds perfect! Would you like to join me there sometime?', sender: 'You', time: '10:10 AM', isOwn: true },
-      { id: '5', content: 'I\'d love to! How about this weekend?', sender: 'Priya Sharma', time: '10:12 AM', isOwn: false },
-    ],
-    '2': [
-      { id: '1', content: 'Hey! I heard you recently moved to Dubai. How\'s it going?', sender: 'Ahmed Hassan', time: '9:00 AM', isOwn: false },
-      { id: '2', content: 'It\'s been quite an adventure! The weather is intense but the opportunities are amazing.', sender: 'You', time: '9:15 AM', isOwn: true },
-      { id: '3', content: 'That\'s great to hear! If you need any tips about the local culture or best places to network, just let me know.', sender: 'Ahmed Hassan', time: '9:20 AM', isOwn: false },
-      { id: '4', content: 'Thanks so much! I really appreciate the support. The community here has been so welcoming.', sender: 'You', time: '9:25 AM', isOwn: true },
-    ],
-    '3': [
-      { id: '1', content: 'Your latest artwork is absolutely stunning! The colors are so vibrant.', sender: 'You', time: '2:00 PM', isOwn: true },
-      { id: '2', content: 'Thank you so much! I\'ve been experimenting with new techniques I learned here in NYC.', sender: 'Maria Rodriguez', time: '2:05 PM', isOwn: false },
-      { id: '3', content: 'It really shows! Are you planning to exhibit any of these pieces?', sender: 'You', time: '2:10 PM', isOwn: true },
-      { id: '4', content: 'Actually, yes! I have a gallery showing next month. Would you like to come?', sender: 'Maria Rodriguez', time: '2:15 PM', isOwn: false },
-    ]
-  };
+  const mockMessages = [
+    {
+      id: '1',
+      sender: 'Priya Sharma',
+      message: 'Hey! How are you settling in Toronto?',
+      timestamp: '2:30 PM',
+      isMine: false
+    },
+    {
+      id: '2',
+      sender: 'Me',
+      message: 'Hi Priya! It\'s going well, thanks for asking. Still getting used to the weather though 😅',
+      timestamp: '2:32 PM',
+      isMine: true
+    },
+    {
+      id: '3',
+      sender: 'Priya Sharma',
+      message: 'Haha, I totally understand! Wait till winter comes. Do you need any recommendations for warm clothes shopping?',
+      timestamp: '2:33 PM',
+      isMine: false
+    },
+    {
+      id: '4',
+      sender: 'Me',
+      message: 'That would be amazing! I\'d really appreciate some local insights.',
+      timestamp: '2:35 PM',
+      isMine: true
+    }
+  ];
 
-  const filteredConversations = demoConversations.filter(conv =>
-    conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    conv.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    conv.role.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter chats based on search query
+  const filteredChats = useMemo(() => {
+    if (!searchChat.trim()) return mockChats;
+    
+    return mockChats.filter(chat => 
+      chat.name.toLowerCase().includes(searchChat.toLowerCase()) ||
+      chat.lastMessage.toLowerCase().includes(searchChat.toLowerCase())
+    );
+  }, [searchChat]);
+
+  const selectedChatData = mockChats.find(chat => chat.id === selectedChat);
 
   const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedConversation) return;
-
-    const message = {
-      id: Date.now().toString(),
-      content: newMessage,
-      sender: 'You',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isOwn: true
-    };
-
-    // This would normally send to the database
-    setNewMessage('');
+    if (newMessage.trim()) {
+      console.log('Sending message:', newMessage);
+      setNewMessage('');
+    }
   };
 
-  if (!profile?.profile_completed) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 flex items-center justify-center">
-        <Card className="bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl max-w-md">
-          <CardContent className="p-8 text-center">
-            <MessageCircle className="h-16 w-16 text-white mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-4">Complete Your Profile</h2>
-            <p className="text-white/80 mb-6">
-              Please complete your profile and verify your identity to start chatting with other members.
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/profile/edit'}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-            >
-              Complete Profile
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 relative overflow-hidden pb-20">
-      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-4">Messages</h1>
-          <p className="text-xl text-white/90">Connect with verified members from around the world</p>
+    <div className="min-h-screen gradient-bg relative overflow-hidden pb-20">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full float-animation blur-xl"></div>
+        <div className="absolute top-40 right-40 w-24 h-24 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full drift-animation blur-xl" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-20 left-40 w-28 h-28 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full float-animation blur-xl" style={{animationDelay: '2s'}}></div>
+        
+        {/* Floating chat icons */}
+        <div className="absolute top-32 right-64 text-4xl opacity-10 bounce-gentle">💬</div>
+        <div className="absolute bottom-32 left-64 text-3xl opacity-10 float-animation" style={{animationDelay: '1.5s'}}>📱</div>
+      </div>
+
+      <div className="container mx-auto px-4 py-6 max-w-7xl relative z-10">
+        <div className="mb-6 text-center">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="relative pulse-glow">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-full p-3 shadow-2xl">
+                <MessageCircle className="h-8 w-8 text-white" />
+              </div>
+              <Sparkles className="h-3 w-3 text-yellow-300 absolute -top-1 -right-1 bounce-gentle" />
+            </div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Chat with Friends
+            </h1>
+            <Heart className="h-5 w-5 text-red-300 bounce-gentle" />
+          </div>
+          <p className="text-gray-200 text-base">
+            Stay connected with your community
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-          {/* Conversations List */}
-          <Card className="bg-white/20 backdrop-blur-md border border-white/30 overflow-hidden">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-white text-xl flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Conversations
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[600px]">
+          {/* Chat List */}
+          <Card className="glass-card shadow-2xl border-0">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-white flex items-center gap-2 text-base">
+                <Users className="h-4 w-4" />
+                Messages ({filteredChats.length})
               </CardTitle>
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-3 w-3" />
                 <Input
                   placeholder="Search conversations..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  value={searchChat}
+                  onChange={(e) => setSearchChat(e.target.value)}
+                  className="pl-8 bg-slate-800/50 border-blue-500/30 focus:border-blue-400 text-white placeholder-gray-400 text-sm h-8"
                 />
               </div>
             </CardHeader>
-            <CardContent className="p-0 overflow-y-auto h-[450px]">
-              <div className="space-y-1">
-                {filteredConversations.map((conv) => (
-                  <div
-                    key={conv.id}
-                    onClick={() => setSelectedConversation(conv.id)}
-                    className={`p-4 hover:bg-white/10 cursor-pointer transition-colors border-l-4 ${
-                      selectedConversation === conv.id 
-                        ? 'bg-white/10 border-l-white' 
-                        : 'border-l-transparent'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
+            <CardContent className="p-0">
+              <div className="space-y-1 max-h-96 overflow-y-auto">
+                {filteredChats.length > 0 ? (
+                  filteredChats.map((chat) => (
+                    <div
+                      key={chat.id}
+                      onClick={() => setSelectedChat(chat.id)}
+                      className={`flex items-center space-x-2 p-3 cursor-pointer transition-all duration-200 mx-3 rounded-lg hover:bg-slate-800/30 ${
+                        selectedChat === chat.id 
+                          ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30' 
+                          : ''
+                      }`}
+                    >
                       <div className="relative">
-                        <Avatar className="h-12 w-12">
-                          <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                            {conv.name.charAt(0)}
+                        <Avatar className="h-8 w-8 border border-blue-400/50">
+                          <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                            {chat.isGroup ? '👥' : chat.name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
-                          conv.status === 'online' ? 'bg-green-500' : 
-                          conv.status === 'away' ? 'bg-yellow-500' : 'bg-gray-500'
-                        }`}></div>
+                        {chat.isOn && (
+                          <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 border border-white rounded-full"></div>
+                        )}
+                        {chat.isVerified && (
+                          <Shield className="h-3 w-3 text-green-400 absolute -top-0.5 -right-0.5 bg-slate-800 rounded-full p-0.5" />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-white font-semibold truncate">{conv.name}</h3>
-                          <span className="text-white/60 text-xs">{conv.time}</span>
+                          <h3 className="font-medium text-white truncate text-xs">{chat.name}</h3>
+                          <div className="flex items-center space-x-1">
+                            <span className="text-xs text-gray-400">{chat.timestamp}</span>
+                            {chat.unread > 0 && (
+                              <Badge className="bg-red-500 text-white text-xs px-1 py-0 h-4 min-w-[16px]">
+                                {chat.unread}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        <p className="text-white/70 text-sm truncate">{conv.lastMessage}</p>
-                        <div className="flex items-center justify-between mt-1">
-                          <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs">
-                            {conv.role}
-                          </Badge>
-                          {conv.unread > 0 && (
-                            <Badge className="bg-red-500 text-white text-xs">
-                              {conv.unread}
-                            </Badge>
-                          )}
-                        </div>
+                        <p className="text-xs text-gray-400 truncate">{chat.lastMessage}</p>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 px-4">
+                    <Search className="h-8 w-8 text-gray-500 mx-auto mb-2" />
+                    <p className="text-gray-400 text-sm">No conversations found</p>
+                    <p className="text-gray-500 text-xs">Try searching with different terms</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Chat Area */}
-          <div className="lg:col-span-2">
-            {selectedConversation ? (
-              <Card className="bg-white/20 backdrop-blur-md border border-white/30 h-full flex flex-col">
+          {/* Chat Window */}
+          <Card className="lg:col-span-2 glass-card shadow-2xl border-0 flex flex-col">
+            {selectedChatData ? (
+              <>
                 {/* Chat Header */}
-                <CardHeader className="pb-4 border-b border-white/20">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-12 w-12">
-                        <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                          {filteredConversations.find(c => c.id === selectedConversation)?.name.charAt(0)}
+                <CardHeader className="border-b border-blue-500/20 pb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="relative">
+                      <Avatar className="h-8 w-8 border border-blue-400/50">
+                        <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                          {selectedChatData.isGroup ? '👥' : selectedChatData.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <h3 className="text-white font-bold">
-                          {filteredConversations.find(c => c.id === selectedConversation)?.name}
-                        </h3>
-                        <p className="text-white/70 text-sm">
-                          {filteredConversations.find(c => c.id === selectedConversation)?.status}
-                        </p>
-                      </div>
+                      {selectedChatData.isOn && (
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 border border-white rounded-full"></div>
+                      )}
                     </div>
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-                        <Phone className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-                        <Video className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
+                    <div>
+                      <CardTitle className="text-white text-sm">{selectedChatData.name}</CardTitle>
+                      <p className="text-gray-400 text-xs">
+                        {selectedChatData.isOn ? 'Online' : 'Last seen ' + selectedChatData.timestamp}
+                      </p>
                     </div>
                   </div>
                 </CardHeader>
 
                 {/* Messages */}
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {(demoMessages[selectedConversation as keyof typeof demoMessages] || []).map((message: any) => (
-                    <div key={message.id} className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.isOwn 
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white' 
-                          : 'bg-white/20 text-white border border-white/30'
-                      }`}>
-                        <p className="text-sm">{message.content}</p>
-                        <p className={`text-xs mt-1 ${message.isOwn ? 'text-white/80' : 'text-white/60'}`}>
-                          {message.time}
-                        </p>
+                <CardContent className="flex-1 p-3 overflow-y-auto">
+                  <div className="space-y-3">
+                    {mockMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.isMine ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
+                            message.isMine
+                              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                              : 'bg-slate-800/50 text-white border border-blue-500/30'
+                          }`}
+                        >
+                          <p className="text-xs">{message.message}</p>
+                          <div className="flex items-center justify-end mt-1">
+                            <span className="text-xs opacity-70">{message.timestamp}</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </CardContent>
 
                 {/* Message Input */}
-                <div className="p-4 border-t border-white/20">
+                <div className="p-3 border-t border-blue-500/20">
                   <div className="flex space-x-2">
                     <Input
-                      placeholder="Type your message..."
+                      placeholder="Type a message..."
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      className="flex-1 bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      onKeyPress={handleKeyPress}
+                      className="flex-1 bg-slate-800/50 border-blue-500/30 focus:border-blue-400 text-white placeholder-gray-400 text-sm"
                     />
                     <Button 
                       onClick={handleSendMessage}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                      disabled={!newMessage.trim()}
+                      size="sm"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50"
                     >
-                      <Send className="h-4 w-4" />
+                      <Send className="h-3 w-3" />
                     </Button>
                   </div>
                 </div>
-              </Card>
+              </>
             ) : (
-              <Card className="bg-white/20 backdrop-blur-md border border-white/30 h-full flex items-center justify-center">
+              <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
-                  <MessageCircle className="h-16 w-16 text-white/60 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Select a conversation</h3>
-                  <p className="text-white/70">Choose a conversation from the list to start chatting</p>
+                  <MessageCircle className="h-12 w-12 text-gray-500 mx-auto mb-3" />
+                  <p className="text-gray-400 text-base">Select a conversation to start chatting</p>
+                  <p className="text-gray-500 text-sm">Choose from your contacts on the left</p>
                 </div>
-              </Card>
+              </div>
             )}
-          </div>
+          </Card>
         </div>
       </div>
     </div>

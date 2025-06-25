@@ -15,16 +15,16 @@ interface EditProfileFormProps {
 }
 
 const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
-  const { profile, updateProfile } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [formData, setFormData] = useState({
-    name: profile?.name || '',
-    email: profile?.email || '',
-    role: profile?.role || 'student' as 'student' | 'artist' | 'businessperson' | 'professional' | 'freelancer' | 'entrepreneur' | 'researcher' | 'teacher' | 'engineer' | 'designer',
-    country: profile?.country || '',
-    city: profile?.city || '',
-    occupation: profile?.occupation || '',
-    bio: profile?.bio || '',
-    interests: profile?.interests?.join(', ') || '',
+    name: user?.name || '',
+    email: user?.email || '',
+    role: user?.role || 'student' as 'student' | 'artist' | 'businessperson',
+    country: user?.country || '',
+    city: user?.city || '',
+    occupation: user?.occupation || '',
+    bio: user?.bio || '',
+    interests: user?.interests?.join(', ') || '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,17 +36,12 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
     }
 
     try {
-      const result = await updateProfile({
+      updateProfile({
         ...formData,
         interests: formData.interests.split(',').map(i => i.trim()).filter(i => i),
       });
-      
-      if (!result.error) {
-        toast.success('Profile updated successfully!');
-        onCancel();
-      } else {
-        toast.error('Failed to update profile');
-      }
+      toast.success('Profile updated successfully!');
+      onCancel();
     } catch (error) {
       toast.error('Failed to update profile');
     }
@@ -110,7 +105,7 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
 
               <div className="space-y-2">
                 <Label htmlFor="role" className="text-white font-semibold">Role</Label>
-                <Select value={formData.role} onValueChange={(value: 'student' | 'artist' | 'businessperson' | 'professional' | 'freelancer' | 'entrepreneur' | 'researcher' | 'teacher' | 'engineer' | 'designer') => setFormData({ ...formData, role: value })}>
+                <Select value={formData.role} onValueChange={(value: 'student' | 'artist' | 'businessperson') => setFormData({ ...formData, role: value })}>
                   <SelectTrigger className="bg-white/20 border-white/30 text-white">
                     <SelectValue />
                   </SelectTrigger>
@@ -118,13 +113,6 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
                     <SelectItem value="student">🎓 Student</SelectItem>
                     <SelectItem value="artist">🎨 Artist</SelectItem>
                     <SelectItem value="businessperson">💼 Businessperson</SelectItem>
-                    <SelectItem value="professional">👔 Professional</SelectItem>
-                    <SelectItem value="freelancer">💻 Freelancer</SelectItem>
-                    <SelectItem value="entrepreneur">🚀 Entrepreneur</SelectItem>
-                    <SelectItem value="researcher">🔬 Researcher</SelectItem>
-                    <SelectItem value="teacher">👨‍🏫 Teacher</SelectItem>
-                    <SelectItem value="engineer">⚙️ Engineer</SelectItem>
-                    <SelectItem value="designer">🎯 Designer</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Mail, MapPin, Briefcase, Eye, EyeOff } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { User, Mail, MapPin, Briefcase, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface RegisterFormProps {
@@ -15,30 +15,17 @@ interface RegisterFormProps {
 
 const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
   const { register } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: '' as 'student' | 'artist' | 'businessperson' | 'professional' | 'freelancer' | 'entrepreneur' | 'researcher' | 'teacher' | 'engineer' | 'designer' | '',
+    role: '' as 'student' | 'artist' | 'businessperson' | '',
     country: '',
     city: '',
     occupation: '',
+    bio: '',
+    interests: ''
   });
-
-  const roleOptions = [
-    { value: 'student', label: '🎓 Student' },
-    { value: 'artist', label: '🎨 Artist' },
-    { value: 'businessperson', label: '💼 Business Person' },
-    { value: 'professional', label: '👔 Professional' },
-    { value: 'freelancer', label: '💻 Freelancer' },
-    { value: 'entrepreneur', label: '🚀 Entrepreneur' },
-    { value: 'researcher', label: '🔬 Researcher' },
-    { value: 'teacher', label: '📚 Teacher' },
-    { value: 'engineer', label: '⚙️ Engineer' },
-    { value: 'designer', label: '🎯 Designer' },
-  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,197 +35,192 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters long');
+    if (!formData.role) {
+      toast.error('Please select a role');
       return;
     }
-
-    setIsLoading(true);
     
-    console.log('Attempting registration with:', { 
-      email: formData.email, 
-      name: formData.name,
-      role: formData.role 
-    });
-
     const userData = {
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      role: formData.role,
+      role: formData.role as 'student' | 'artist' | 'businessperson',
       country: formData.country,
       city: formData.city,
       occupation: formData.occupation,
-      interests: [],
-      bio: '',
+      interests: formData.interests ? formData.interests.split(',').map(i => i.trim()) : [],
+      bio: formData.bio,
     };
 
-    const { error } = await register(userData);
-    
-    if (error) {
-      console.error('Registration error:', error);
-      toast.error(error.message || 'Registration failed');
-    } else {
-      toast.success('Account created! Please check your email to verify your account.');
-      if (onSwitchToLogin) {
-        setTimeout(() => onSwitchToLogin(), 2000);
-      }
+    const success = await register(userData);
+    if (success) {
+      toast.success('Account created successfully!');
     }
-    
-    setIsLoading(false);
   };
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md border border-white/30 shadow-2xl">
-      <CardHeader className="text-center pb-4">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <User className="h-6 w-6 text-blue-600" />
-          <CardTitle className="text-2xl md:text-3xl text-gray-800">Join Passport Pals</CardTitle>
-        </div>
-        <CardDescription className="text-gray-600 text-sm md:text-base">
-          Create your account to get started
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name *</Label>
-            <Input
-              id="name"
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              placeholder="Enter your full name"
-              required
-            />
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 flex items-center justify-center p-4">
+      <Card className="w-full max-w-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-2xl">
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <User className="h-8 w-8 text-white" />
+            <CardTitle className="text-3xl text-white">Join Passport Pals</CardTitle>
+            <Heart className="h-6 w-6 text-red-300" />
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email *</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                placeholder="Enter your email"
-                required
-              />
+          <CardDescription className="text-white/90">
+            Connect with your community abroad
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-white">Full Name *</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-white">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-700">Password *</Label>
-            <div className="relative">
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-white">Password *</Label>
               <Input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="pr-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                placeholder="Create a password (min 6 characters)"
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                placeholder="Create a password"
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="role" className="text-sm font-medium text-gray-700">I am a *</Label>
-            <Select value={formData.role} onValueChange={(value: any) => setFormData({...formData, role: value})}>
-              <SelectTrigger className="bg-white border-gray-300 text-gray-900 focus:border-blue-500">
-                <SelectValue placeholder="Select your role" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-300">
-                {roleOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value} className="text-gray-900 hover:bg-blue-50">
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="country" className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                Home Country *
+              <Label htmlFor="role" className="text-white">I am a *</Label>
+              <Select value={formData.role} onValueChange={(value: 'student' | 'artist' | 'businessperson') => setFormData({...formData, role: value})}>
+                <SelectTrigger className="bg-white/20 border-white/30 text-white">
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-300">
+                  <SelectItem value="student">🎓 Student</SelectItem>
+                  <SelectItem value="artist">🎨 Artist</SelectItem>
+                  <SelectItem value="businessperson">💼 Business Person</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="country" className="text-white flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Home Country *
+                </Label>
+                <Input
+                  id="country"
+                  type="text"
+                  value={formData.country}
+                  onChange={(e) => setFormData({...formData, country: e.target.value})}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  placeholder="e.g., India"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="city" className="text-white">Current City *</Label>
+                <Input
+                  id="city"
+                  type="text"
+                  value={formData.city}
+                  onChange={(e) => setFormData({...formData, city: e.target.value})}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  placeholder="e.g., Toronto"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="occupation" className="text-white flex items-center gap-2">
+                <Briefcase className="h-4 w-4" />
+                Occupation
               </Label>
               <Input
-                id="country"
+                id="occupation"
                 type="text"
-                value={formData.country}
-                onChange={(e) => setFormData({...formData, country: e.target.value})}
-                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                placeholder="e.g., India, Nigeria"
-                required
+                value={formData.occupation}
+                onChange={(e) => setFormData({...formData, occupation: e.target.value})}
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                placeholder="e.g., Software Engineer"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="city" className="text-sm font-medium text-gray-700">Current City *</Label>
-              <Input
-                id="city"
-                type="text"
-                value={formData.city}
-                onChange={(e) => setFormData({...formData, city: e.target.value})}
-                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                placeholder="e.g., Toronto, London"
-                required
+              <Label htmlFor="bio" className="text-white">Bio</Label>
+              <Textarea
+                id="bio"
+                value={formData.bio}
+                onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                placeholder="Tell us about yourself..."
+                rows={3}
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="occupation" className="text-sm font-medium text-gray-700 flex items-center gap-1">
-              <Briefcase className="h-3 w-3" />
-              Occupation
-            </Label>
-            <Input
-              id="occupation"
-              type="text"
-              value={formData.occupation}
-              onChange={(e) => setFormData({...formData, occupation: e.target.value})}
-              className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              placeholder="e.g., Software Engineer, Student"
-            />
-          </div>
-
-          <Button 
-            type="submit" 
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2.5 text-sm md:text-base transition-all duration-300"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Creating Account...' : 'Create Account'}
-          </Button>
-
-          {onSwitchToLogin && (
-            <div className="text-center pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600">
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={onSwitchToLogin}
-                  className="text-blue-600 font-medium hover:text-blue-800 hover:underline transition-colors"
-                >
-                  Sign in here
-                </button>
-              </p>
+            <div className="space-y-2">
+              <Label htmlFor="interests" className="text-white">Interests</Label>
+              <Input
+                id="interests"
+                type="text"
+                value={formData.interests}
+                onChange={(e) => setFormData({...formData, interests: e.target.value})}
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                placeholder="e.g., Travel, Food, Technology (comma separated)"
+              />
             </div>
-          )}
-        </form>
-      </CardContent>
-    </Card>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3"
+            >
+              Create Account
+            </Button>
+
+            {onSwitchToLogin && (
+              <div className="text-center mt-4">
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={onSwitchToLogin}
+                  className="text-white/90 hover:text-white"
+                >
+                  Already have an account? Login here
+                </Button>
+              </div>
+            )}
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

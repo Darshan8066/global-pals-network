@@ -1,47 +1,12 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User as SupabaseUser, Session } from '@supabase/supabase-js';
-import { supabase } from '../integrations/supabase/client';
-
-export interface Profile {
-  id: string;
-  user_id: string;
-  name: string;
-  email: string;
-  role: string; // Changed from union type to string to match database
-  country: string;
-  city: string;
-  occupation?: string;
-  bio?: string;
-  interests: string[];
-  phone_number?: string;
-  date_of_birth?: string;
-  address?: string;
-  emergency_contact?: string;
-  emergency_phone?: string;
-  passport_number?: string;
-  passport_expiry?: string;
-  visa_status?: string;
-  is_verified: boolean;
-  profile_completed: boolean;
-  profile_image_url?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface AuthState {
-  user: SupabaseUser | null;
-  profile: Profile | null;
-  session: Session | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { User, AuthState } from '../types/user';
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<{ error: any }>;
-  register: (userData: any) => Promise<{ error: any }>;
-  logout: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
+  login: (user: User, token: string) => void;
+  register: (userData: Partial<User> & { password: string }) => Promise<boolean>;
+  logout: () => void;
+  updateProfile: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,119 +22,61 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
-    profile: null,
-    session: null,
     isAuthenticated: false,
-    isLoading: true,
+    isLoading: false,
   });
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session);
-        
-        if (session?.user) {
-          // Fetch user profile
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('user_id', session.user.id)
-            .single();
-
-          setAuthState({
-            user: session.user,
-            profile: profile as Profile,
-            session,
-            isAuthenticated: true,
-            isLoading: false,
-          });
-        } else {
-          setAuthState({
-            user: null,
-            profile: null,
-            session: null,
-            isAuthenticated: false,
-            isLoading: false,
-          });
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single()
-          .then(({ data: profile }) => {
-            setAuthState({
-              user: session.user,
-              profile: profile as Profile,
-              session,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-          });
-      } else {
-        setAuthState(prev => ({ ...prev, isLoading: false }));
-      }
+  const login = (user: User, token: string) => {
+    setAuthState({
+      user,
+      isAuthenticated: true,
+      isLoading: false,
     });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
   };
 
-  const register = async (userData: any) => {
-    const { error } = await supabase.auth.signUp({
-      email: userData.email,
-      password: userData.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          name: userData.name,
-          role: userData.role,
-          country: userData.country,
-          city: userData.city,
-          occupation: userData.occupation,
-          bio: userData.bio,
-          interests: userData.interests || [],
-        }
-      }
+  const register = async (userData: Partial<User> & { password: string }): Promise<boolean> => {
+    setAuthState(prev => ({ ...prev, isLoading: true }));
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const newUser: User = {
+      id: Date.now().toString(),
+      email: userData.email!,
+      name: userData.name!,
+      role: userData.role!,
+      country: userData.country!,
+      city: userData.city!,
+      occupation: userData.occupation || '',
+      interests: userData.interests || [],
+      isVerified: false,
+      bio: userData.bio,
+      createdAt: new Date(),
+    };
+
+    setAuthState({
+      user: newUser,
+      isAuthenticated: true,
+      isLoading: false,
     });
 
-    return { error };
+    return true;
   };
 
-  const logout = async () => {
-    await supabase.auth.signOut();
+  const logout = () => {
+    setAuthState({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+    });
   };
 
-  const updateProfile = async (updates: Partial<Profile>) => {
-    if (!authState.user) return { error: 'Not authenticated' };
-
-    const { error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('user_id', authState.user.id);
-
-    if (!error) {
+  const updateProfile = (updates: Partial<User>) => {
+    if (authState.user) {
       setAuthState(prev => ({
         ...prev,
-        profile: prev.profile ? { ...prev.profile, ...updates } : null
+        user: { ...prev.user!, ...updates },
       }));
     }
-
-    return { error };
   };
 
   return (

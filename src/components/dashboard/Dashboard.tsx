@@ -21,9 +21,9 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
-  const { profile } = useAuth();
+  const { user } = useAuth();
 
-  if (!profile) return null;
+  if (!user) return null;
 
   const mockConnections = [
     {
@@ -70,7 +70,7 @@ const Dashboard = () => {
               <Sparkles className="h-4 w-4 text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
             </div>
             <h1 className="text-4xl font-bold text-white drop-shadow-lg">
-              Welcome back, {profile.name}!
+              Welcome back, {user.name}!
             </h1>
             <Heart className="h-8 w-8 text-red-300 animate-pulse" />
           </div>
@@ -86,20 +86,20 @@ const Dashboard = () => {
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                    <AvatarImage src={profile.profile_image_url} />
+                    <AvatarImage src={user.profileImage} />
                     <AvatarFallback className="text-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                      {profile.name.charAt(0).toUpperCase()}
+                      {user.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <Star className="h-6 w-6 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-xl text-white">{profile.name}</CardTitle>
+                  <CardTitle className="text-xl text-white">{user.name}</CardTitle>
                   <CardDescription className="flex items-center space-x-2">
-                    <Badge variant={profile.role === 'student' ? 'default' : profile.role === 'artist' ? 'secondary' : 'outline'} className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                      {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
+                    <Badge variant={user.role === 'student' ? 'default' : user.role === 'artist' ? 'secondary' : 'outline'} className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </Badge>
-                    {profile.is_verified && (
+                    {user.isVerified && (
                       <Badge variant="secondary" className="bg-gradient-to-r from-green-500 to-teal-500 text-white">
                         <Shield className="h-3 w-3 mr-1" />
                         Verified
@@ -112,16 +112,16 @@ const Dashboard = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-2 text-sm text-white">
                 <MapPin className="h-4 w-4 text-pink-300" />
-                <span>{profile.city}, {profile.country}</span>
+                <span>{user.city}, {user.country}</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-white">
                 <Calendar className="h-4 w-4 text-blue-300" />
-                <span>Joined {new Date(profile.created_at).toLocaleDateString()}</span>
+                <span>Joined {user.createdAt.toLocaleDateString()}</span>
               </div>
-              {profile.bio && (
-                <p className="text-sm text-white/90">{profile.bio}</p>
+              {user.bio && (
+                <p className="text-sm text-white/90">{user.bio}</p>
               )}
-              {!profile.is_verified && (
+              {!user.isVerified && (
                 <div className="bg-amber-500/20 border border-amber-300/50 rounded-lg p-3 backdrop-blur-sm">
                   <div className="flex items-center space-x-2 text-amber-100 mb-2">
                     <Clock className="h-4 w-4" />

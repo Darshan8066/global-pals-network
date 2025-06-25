@@ -6,14 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '../../contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
-  onSwitchToForgot: () => void;
 }
 
-const LoginForm = ({ onSwitchToRegister, onSwitchToForgot }: LoginFormProps) => {
+const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,35 +22,42 @@ const LoginForm = ({ onSwitchToRegister, onSwitchToForgot }: LoginFormProps) => 
     e.preventDefault();
     setIsLoading(true);
     
-    console.log('Attempting login with:', { email });
+    // Simulate login - in real app, this would be an API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const { error } = await login(email, password);
+    // Create a mock user for demonstration
+    const mockUser = {
+      id: '1',
+      email,
+      name: email.split('@')[0],
+      role: 'student' as const,
+      country: 'United States',
+      city: 'New York',
+      occupation: 'Computer Science Student',
+      interests: ['Technology', 'Travel'],
+      isVerified: true,
+      createdAt: new Date(),
+    };
     
-    if (error) {
-      console.error('Login error:', error);
-      toast.error(error.message || 'Login failed. Please check your credentials.');
-    } else {
-      toast.success('Welcome back!');
-    }
-    
+    login(mockUser, 'mock-token');
     setIsLoading(false);
   };
 
   return (
-    <Card className="w-full bg-white/95 backdrop-blur-md border border-white/30 shadow-2xl">
-      <CardHeader className="space-y-1 text-center pb-4">
-        <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800">
-          Welcome Back
+    <Card className="w-full max-w-md mx-auto glass-card shadow-2xl border-0">
+      <CardHeader className="space-y-1 text-center">
+        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          Welcome to Passport Pals
         </CardTitle>
-        <CardDescription className="text-gray-600 text-sm md:text-base">
-          Sign in to your account
+        <CardDescription className="text-gray-300">
+          Sign in to connect with your community
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-              Email Address
+            <Label htmlFor="email" className="text-sm font-medium text-gray-200">
+              Email
             </Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -62,14 +67,14 @@ const LoginForm = ({ onSwitchToRegister, onSwitchToForgot }: LoginFormProps) => 
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="pl-10 bg-slate-800/50 border-blue-500/30 focus:border-blue-400 focus:ring-blue-400 text-white placeholder-gray-400"
                 required
               />
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="password" className="text-sm font-medium text-gray-200">
               Password
             </Label>
             <div className="relative">
@@ -80,46 +85,36 @@ const LoginForm = ({ onSwitchToRegister, onSwitchToForgot }: LoginFormProps) => 
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 pr-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="pl-10 pr-10 bg-slate-800/50 border-blue-500/30 focus:border-blue-400 focus:ring-blue-400 text-white placeholder-gray-400"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-3 text-gray-400 hover:text-gray-200 transition-colors"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onSwitchToForgot}
-              className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-            >
-              Forgot password?
-            </button>
-          </div>
-
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2.5 text-sm md:text-base transition-all duration-300"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
             disabled={isLoading}
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
 
-        <div className="text-center pt-4 border-t border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="text-center">
+          <p className="text-sm text-gray-300">
             Don't have an account?{' '}
             <button
               onClick={onSwitchToRegister}
-              className="text-blue-600 font-medium hover:text-blue-800 hover:underline transition-colors"
+              className="text-purple-400 hover:text-purple-300 font-medium transition-colors hover:underline"
             >
-              Create one here
+              Sign up here
             </button>
           </p>
         </div>
