@@ -5,12 +5,13 @@ import { supabase } from '../integrations/supabase/client';
 
 export interface Profile {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   role: 'student' | 'artist' | 'businessperson' | 'professional' | 'freelancer' | 'entrepreneur' | 'researcher' | 'teacher' | 'engineer' | 'designer';
   country: string;
   city: string;
-  occupation: string;
+  occupation?: string;
   bio?: string;
   interests: string[];
   phone_number?: string;
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', session.user.id)
+            .eq('user_id', session.user.id)
             .single();
 
           setAuthState({
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         supabase
           .from('profiles')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('user_id', session.user.id)
           .single()
           .then(({ data: profile }) => {
             setAuthState({
@@ -137,35 +138,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: {
           name: userData.name,
           role: userData.role,
+          country: userData.country,
+          city: userData.city,
+          occupation: userData.occupation,
+          bio: userData.bio,
+          interests: userData.interests || [],
         }
       }
     });
-
-    if (!error) {
-      // Update profile with additional data
-      setTimeout(async () => {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', userData.email)
-          .single();
-
-        if (profile) {
-          await supabase
-            .from('profiles')
-            .update({
-              name: userData.name,
-              role: userData.role,
-              country: userData.country,
-              city: userData.city,
-              occupation: userData.occupation,
-              bio: userData.bio,
-              interests: userData.interests || [],
-            })
-            .eq('id', profile.id);
-        }
-      }, 1000);
-    }
 
     return { error };
   };
@@ -180,7 +160,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { error } = await supabase
       .from('profiles')
       .update(updates)
-      .eq('id', authState.user.id);
+      .eq('user_id', authState.user.id);
 
     if (!error) {
       setAuthState(prev => ({
