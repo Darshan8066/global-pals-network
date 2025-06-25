@@ -12,19 +12,19 @@ import DocumentsStep from './steps/DocumentsStep';
 import ReviewStep from './steps/ReviewStep';
 
 const MultiStepEditProfile = () => {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // General Info
-    name: user?.name || '',
-    email: user?.email || '',
-    role: user?.role || 'student' as 'student' | 'artist' | 'businessperson',
-    country: user?.country || '',
-    city: user?.city || '',
-    occupation: user?.occupation || '',
-    bio: user?.bio || '',
-    interests: user?.interests?.join(', ') || '',
+    name: profile?.name || '',
+    email: profile?.email || '',
+    role: profile?.role || 'student' as 'student' | 'artist' | 'businessperson' | 'professional' | 'freelancer' | 'entrepreneur' | 'researcher' | 'teacher' | 'engineer' | 'designer',
+    country: profile?.country || '',
+    city: profile?.city || '',
+    occupation: profile?.occupation || '',
+    bio: profile?.bio || '',
+    interests: profile?.interests?.join(', ') || '',
     
     // Personal Details
     dateOfBirth: '',

@@ -23,11 +23,11 @@ import { useNavigate } from 'react-router-dom';
 import DeleteProfileDialog from './DeleteProfileDialog';
 
 const ProfilePage = () => {
-  const { user, logout } = useAuth();
+  const { profile, logout } = useAuth();
   const navigate = useNavigate();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  if (!user) return null;
+  if (!profile) return null;
 
   const handleEditProfile = () => {
     navigate('/profile/edit');
@@ -62,25 +62,25 @@ const ProfilePage = () => {
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
                   <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-                    <AvatarImage src={user.profileImage} />
+                    <AvatarImage src={profile.profile_image_url} />
                     <AvatarFallback className="text-4xl bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                      {user.name.charAt(0).toUpperCase()}
+                      {profile.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  {user.isVerified && (
+                  {profile.is_verified && (
                     <Shield className="h-8 w-8 text-green-400 absolute -bottom-2 -right-2 bg-white rounded-full p-1" />
                   )}
                 </div>
                 
                 <div className="space-y-2">
-                  <CardTitle className="text-3xl text-white">{user.name}</CardTitle>
+                  <CardTitle className="text-3xl text-white">{profile.name}</CardTitle>
                   <div className="flex items-center justify-center space-x-2">
-                    <Badge variant={user.role === 'student' ? 'default' : user.role === 'artist' ? 'secondary' : 'outline'} 
+                    <Badge variant={profile.role === 'student' ? 'default' : profile.role === 'artist' ? 'secondary' : 'outline'} 
                            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg px-4 py-2">
-                      {user.role === 'student' ? '🎓' : user.role === 'artist' ? '🎨' : '💼'} 
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      {profile.role === 'student' ? '🎓' : profile.role === 'artist' ? '🎨' : '💼'} 
+                      {profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
                     </Badge>
-                    {user.isVerified && (
+                    {profile.is_verified && (
                       <Badge variant="secondary" className="bg-gradient-to-r from-green-500 to-teal-500 text-white">
                         <Shield className="h-4 w-4 mr-1" />
                         Verified
@@ -106,41 +106,41 @@ const ProfilePage = () => {
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3 text-white">
                     <Mail className="h-5 w-5 text-blue-300" />
-                    <span className="text-lg">{user.email}</span>
+                    <span className="text-lg">{profile.email}</span>
                   </div>
                   
                   <div className="flex items-center space-x-3 text-white">
                     <MapPin className="h-5 w-5 text-pink-300" />
-                    <span className="text-lg">{user.city}, {user.country}</span>
+                    <span className="text-lg">{profile.city}, {profile.country}</span>
                   </div>
                   
                   <div className="flex items-center space-x-3 text-white">
                     <Briefcase className="h-5 w-5 text-green-300" />
-                    <span className="text-lg">{user.occupation}</span>
+                    <span className="text-lg">{profile.occupation}</span>
                   </div>
                   
                   <div className="flex items-center space-x-3 text-white">
                     <Calendar className="h-5 w-5 text-yellow-300" />
-                    <span className="text-lg">Joined {user.createdAt.toLocaleDateString()}</span>
+                    <span className="text-lg">Joined {new Date(profile.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  {user.bio && (
+                  {profile.bio && (
                     <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                       <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                         <Globe className="h-4 w-4" />
                         About Me
                       </h3>
-                      <p className="text-white/90">{user.bio}</p>
+                      <p className="text-white/90">{profile.bio}</p>
                     </div>
                   )}
                   
-                  {user.interests && user.interests.length > 0 && (
+                  {profile.interests && profile.interests.length > 0 && (
                     <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                       <h3 className="text-white font-semibold mb-2">Interests</h3>
                       <div className="flex flex-wrap gap-2">
-                        {user.interests.map((interest, index) => (
+                        {profile.interests.map((interest, index) => (
                           <Badge key={index} variant="outline" className="bg-white/20 text-white border-white/30">
                             {interest}
                           </Badge>
