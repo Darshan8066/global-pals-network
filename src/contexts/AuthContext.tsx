@@ -58,6 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     fetchSession();
 
     supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session);
       setSession(session);
 
       if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
@@ -99,17 +100,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (profile) {
         const userProfile: User = {
           id: supabaseUser.id,
-          name: profile.name,
+          name: profile.name || '',
           email: supabaseUser.email || '',
-          role: profile.role as User['role'] || 'student',
-          country: profile.country,
-          city: profile.city,
-          occupation: profile.occupation,
-          bio: profile.bio,
+          role: (profile.role as User['role']) || 'student',
+          country: profile.country || '',
+          city: profile.city || '',
+          occupation: profile.occupation || '',
+          bio: profile.bio || '',
           interests: profile.interests || [],
           profileImage: profile.profile_image_url || '',
           isVerified: profile.is_verified || false,
-          createdAt: new Date(profile.created_at)
+          createdAt: new Date(profile.created_at || new Date())
         };
 
         setUser(userProfile);
@@ -125,17 +126,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
       if (error) {
-        toast.error(error.message);
-      } else {
+        console.error('Login error:', error);
+        
+        // Handle specific error cases
+        if (error.message.includes('Email not confirmed')) {
+          toast.error('Please check your email and click the confirmation link before logging in.');
+        } else if (error.message.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Too many requests')) {
+          toast.error('Too many login attempts. Please wait a moment before trying again.');
+        } else {
+          toast.error(error.message || 'An error occurred during login.');
+        }
+        throw error;
+      }
+      
+      if (data.user) {
         toast.success('Logged in successfully!');
       }
     } catch (error) {
-      toast.error('An error occurred during login.');
+      console.error('Login error:', error);
+      // Error already handled above
+      throw error;
     }
   };
 
