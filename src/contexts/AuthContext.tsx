@@ -165,7 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .from('profiles')
         .update({
           ...data,
-          updated_at: new Date()
+          updated_at: new Date().toISOString()
         })
         .eq('user_id', user.id);
 
