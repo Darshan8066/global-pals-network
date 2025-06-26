@@ -19,7 +19,7 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
-    role: user?.role || 'student' as 'student' | 'artist' | 'businessperson',
+    role: user?.role || 'student' as 'student' | 'artist' | 'businessperson' | 'professional' | 'entrepreneur' | 'designer' | 'developer' | 'teacher' | 'doctor' | 'engineer' | 'chef' | 'writer',
     country: user?.country || '',
     city: user?.city || '',
     occupation: user?.occupation || '',
@@ -48,7 +48,7 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 relative overflow-hidden pb-20">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-20 w-32 h-32 bg-yellow-300 rounded-full opacity-10 animate-bounce"></div>
@@ -105,14 +105,23 @@ const EditProfileForm = ({ onCancel }: EditProfileFormProps) => {
 
               <div className="space-y-2">
                 <Label htmlFor="role" className="text-white font-semibold">Role</Label>
-                <Select value={formData.role} onValueChange={(value: 'student' | 'artist' | 'businessperson') => setFormData({ ...formData, role: value })}>
+                <Select value={formData.role} onValueChange={(value: any) => setFormData({ ...formData, role: value })}>
                   <SelectTrigger className="bg-white/20 border-white/30 text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300">
-                    <SelectItem value="student">🎓 Student</SelectItem>
-                    <SelectItem value="artist">🎨 Artist</SelectItem>
-                    <SelectItem value="businessperson">💼 Businessperson</SelectItem>
+                  <SelectContent className="bg-slate-800 border-slate-600">
+                    <SelectItem value="student" className="text-blue-300 hover:bg-slate-700">🎓 Student</SelectItem>
+                    <SelectItem value="artist" className="text-pink-300 hover:bg-slate-700">🎨 Artist</SelectItem>
+                    <SelectItem value="businessperson" className="text-green-300 hover:bg-slate-700">💼 Business Person</SelectItem>
+                    <SelectItem value="professional" className="text-purple-300 hover:bg-slate-700">👨‍💻 Professional</SelectItem>
+                    <SelectItem value="entrepreneur" className="text-orange-300 hover:bg-slate-700">🚀 Entrepreneur</SelectItem>
+                    <SelectItem value="designer" className="text-cyan-300 hover:bg-slate-700">🎯 Designer</SelectItem>
+                    <SelectItem value="developer" className="text-emerald-300 hover:bg-slate-700">💻 Developer</SelectItem>
+                    <SelectItem value="teacher" className="text-yellow-300 hover:bg-slate-700">👨‍🏫 Teacher</SelectItem>
+                    <SelectItem value="doctor" className="text-red-300 hover:bg-slate-700">👨‍⚕️ Doctor</SelectItem>
+                    <SelectItem value="engineer" className="text-indigo-300 hover:bg-slate-700">⚙️ Engineer</SelectItem>
+                    <SelectItem value="chef" className="text-amber-300 hover:bg-slate-700">👨‍🍳 Chef</SelectItem>
+                    <SelectItem value="writer" className="text-violet-300 hover:bg-slate-700">✍️ Writer</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

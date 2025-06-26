@@ -10,13 +10,7 @@ import {
   Search,
   MessageCircle,
   Home,
-  Phone,
-  Mail,
-  HelpCircle,
-  MapPin,
-  Users,
-  UserPlus,
-  Zap
+  MapPin
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DeleteProfileDialog from './profile/DeleteProfileDialog';
@@ -41,38 +35,6 @@ const Navbar = () => {
 
   const handleChatClick = () => {
     navigate('/chat');
-  };
-
-  const handleActiveMembersClick = () => {
-    navigate('/active-members');
-  };
-
-  const handleCountriesClick = () => {
-    navigate('/countries');
-  };
-
-  const handleNewConnectionsClick = () => {
-    navigate('/new-connections');
-  };
-
-  const handleSmartDiscoveryClick = () => {
-    navigate('/smart-discovery');
-  };
-
-  const handleGlobalNetworkClick = () => {
-    navigate('/global-network');
-  };
-
-  const handleContactClick = () => {
-    alert('Contact form will open here. You can reach us at support@passportpals.com');
-  };
-
-  const handleSupportClick = () => {
-    alert('Support center opening... Visit our help section for assistance.');
-  };
-
-  const handleHelpClick = () => {
-    alert('Help documentation opening... Find answers to common questions.');
   };
 
   const getButtonClasses = (path: string) => {
@@ -146,36 +108,6 @@ const Navbar = () => {
               >
                 <Home className="h-3 w-3 mr-1" />
                 <span className="hidden sm:inline">Home</span>
-              </Button>
-
-              <Button
-                onClick={handleActiveMembersClick}
-                variant="outline"
-                size="sm"
-                className={getButtonClasses('/active-members')}
-              >
-                <Users className="h-3 w-3 mr-1" />
-                <span className="hidden sm:inline">Members</span>
-              </Button>
-
-              <Button
-                onClick={handleNewConnectionsClick}
-                variant="outline"
-                size="sm"
-                className={getButtonClasses('/new-connections')}
-              >
-                <UserPlus className="h-3 w-3 mr-1" />
-                <span className="hidden sm:inline">Connect</span>
-              </Button>
-
-              <Button
-                onClick={handleSmartDiscoveryClick}
-                variant="outline"
-                size="sm"
-                className={getButtonClasses('/smart-discovery')}
-              >
-                <Zap className="h-3 w-3 mr-1" />
-                <span className="hidden sm:inline">Discovery</span>
               </Button>
 
               <Button

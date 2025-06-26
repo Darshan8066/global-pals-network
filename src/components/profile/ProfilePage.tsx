@@ -78,31 +78,34 @@ const ProfilePage = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-500 relative overflow-hidden pb-20">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-yellow-300 rounded-full opacity-20 animate-bounce"></div>
-          <div className="absolute top-20 right-20 w-32 h-32 bg-green-300 rounded-full opacity-20 animate-pulse"></div>
-          <div className="absolute bottom-20 left-20 w-24 h-24 bg-red-300 rounded-full opacity-20 animate-bounce delay-1000"></div>
-          <div className="absolute bottom-40 right-40 w-28 h-28 bg-blue-300 rounded-full opacity-20 animate-pulse delay-500"></div>
+          <div className="absolute top-20 left-20 w-40 h-40 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full float-animation blur-xl"></div>
+          <div className="absolute top-60 right-32 w-32 h-32 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full drift-animation blur-xl" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-40 left-32 w-36 h-36 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full float-animation blur-xl" style={{animationDelay: '2s'}}></div>
           
-          {/* Floating emojis */}
-          <div className="absolute top-32 right-64 text-4xl opacity-10 animate-bounce">👋</div>
-          <div className="absolute bottom-32 left-64 text-3xl opacity-10 animate-pulse">✨</div>
+          {/* Floating elements */}
+          <div className="absolute top-32 right-64 text-6xl opacity-10 bounce-gentle">👤</div>
+          <div className="absolute bottom-32 left-64 text-5xl opacity-10 float-animation" style={{animationDelay: '1.5s'}}>✨</div>
         </div>
 
         <div className="container mx-auto px-4 py-8 max-w-4xl relative z-10">
           <div className="mb-8 text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="relative">
-                <User className="h-12 w-12 text-white drop-shadow-lg transform hover:rotate-12 transition-transform duration-500" />
-                <Sparkles className="h-4 w-4 text-yellow-300 absolute -top-1 -right-1 animate-pulse" />
+              <div className="relative pulse-glow">
+                <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-4 shadow-2xl">
+                  <User className="h-12 w-12 text-white" />
+                </div>
+                <Sparkles className="h-5 w-5 text-yellow-400 absolute -top-1 -right-1 bounce-gentle" />
               </div>
-              <h1 className="text-4xl font-bold text-white drop-shadow-lg animate-fade-in">
-                My Profile
-              </h1>
-              <Heart className="h-8 w-8 text-red-300 animate-pulse" />
+              <div className="text-center">
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl mb-2">
+                  My Profile
+                </h1>
+                <p className="text-lg text-blue-200 font-medium">Your Digital Identity</p>
+              </div>
             </div>
           </div>
 
-          <Card className="bg-slate-900/90 backdrop-blur-md border border-slate-700 shadow-2xl hover:scale-105 transition-transform duration-300">
+          <Card className="glass-card hover:shadow-2xl transition-all duration-500 border-0">
             <CardHeader className="text-center">
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
@@ -154,7 +157,7 @@ const ProfilePage = () => {
                 <div className="flex space-x-4">
                   <Button 
                     onClick={handleEditProfile}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white hover:scale-110 transition-transform duration-200"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white hover:scale-110 transition-transform duration-200 btn-animated border-0"
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit Profile
@@ -166,30 +169,38 @@ const ProfilePage = () => {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-200">
-                    <Mail className="h-5 w-5 text-blue-300" />
-                    <span className="text-lg">{user.email}</span>
+                  <div className="animated-card p-4 hover:scale-105 transition-transform duration-200">
+                    <div className="flex items-center space-x-3 text-white">
+                      <Mail className="h-5 w-5 text-blue-300" />
+                      <span className="text-lg">{user.email}</span>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-200">
-                    <MapPin className="h-5 w-5 text-pink-300" />
-                    <span className="text-lg">{user.city}, {user.country}</span>
+                  <div className="animated-card p-4 hover:scale-105 transition-transform duration-200">
+                    <div className="flex items-center space-x-3 text-white">
+                      <MapPin className="h-5 w-5 text-pink-300" />
+                      <span className="text-lg">{user.city}, {user.country}</span>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-200">
-                    <Briefcase className="h-5 w-5 text-green-300" />
-                    <span className="text-lg">{user.occupation}</span>
+                  <div className="animated-card p-4 hover:scale-105 transition-transform duration-200">
+                    <div className="flex items-center space-x-3 text-white">
+                      <Briefcase className="h-5 w-5 text-green-300" />
+                      <span className="text-lg">{user.occupation}</span>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-200">
-                    <Calendar className="h-5 w-5 text-yellow-300" />
-                    <span className="text-lg">Joined {user.createdAt.toLocaleDateString()}</span>
+                  <div className="animated-card p-4 hover:scale-105 transition-transform duration-200">
+                    <div className="flex items-center space-x-3 text-white">
+                      <Calendar className="h-5 w-5 text-yellow-300" />
+                      <span className="text-lg">Joined {user.createdAt.toLocaleDateString()}</span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   {user.bio && (
-                    <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-4 border border-slate-600 hover:scale-105 transition-transform duration-200">
+                    <div className="animated-card p-4 hover:scale-105 transition-transform duration-200">
                       <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                         <Globe className="h-4 w-4" />
                         About Me
@@ -199,7 +210,7 @@ const ProfilePage = () => {
                   )}
                   
                   {user.interests && user.interests.length > 0 && (
-                    <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-4 border border-slate-600 hover:scale-105 transition-transform duration-200">
+                    <div className="animated-card p-4 hover:scale-105 transition-transform duration-200">
                       <h3 className="text-white font-semibold mb-2">Interests</h3>
                       <div className="flex flex-wrap gap-2">
                         {user.interests.map((interest, index) => (
@@ -214,12 +225,12 @@ const ProfilePage = () => {
               </div>
 
               {/* Account Actions */}
-              <div className="border-t border-slate-600 pt-6">
+              <div className="border-t border-white/20 pt-6">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     onClick={() => setShowDeleteDialog(true)}
                     variant="outline"
-                    className="bg-red-500/20 border-red-400/50 text-red-300 hover:bg-red-500/40 backdrop-blur-sm hover:scale-110 transition-transform duration-200"
+                    className="bg-red-500/20 border-red-400/50 text-red-300 hover:bg-red-500/40 backdrop-blur-sm hover:scale-110 transition-transform duration-200 btn-animated"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete Account
@@ -228,7 +239,7 @@ const ProfilePage = () => {
                   <Button
                     onClick={logout}
                     variant="outline"
-                    className="bg-slate-700/50 border-slate-500 text-white hover:bg-slate-600/50 backdrop-blur-sm hover:scale-110 transition-transform duration-200"
+                    className="bg-slate-700/50 border-slate-500 text-white hover:bg-slate-600/50 backdrop-blur-sm hover:scale-110 transition-transform duration-200 btn-animated"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
