@@ -12,7 +12,13 @@ import ChatPage from "./components/pages/ChatPage";
 import StatsPage from "./components/pages/StatsPage";
 import ProfilePage from "./components/profile/ProfilePage";
 import MultiStepEditProfile from "./components/profile/MultiStepEditProfile";
+import ActiveMembersPage from "./components/pages/ActiveMembersPage";
+import CountriesPage from "./components/pages/CountriesPage";
+import NewConnectionsPage from "./components/pages/NewConnectionsPage";
+import SmartDiscoveryPage from "./components/pages/SmartDiscoveryPage";
+import GlobalNetworkPage from "./components/pages/GlobalNetworkPage";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -34,8 +40,14 @@ const AppContent = () => {
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<MultiStepEditProfile />} />
+        <Route path="/active-members" element={<ActiveMembersPage />} />
+        <Route path="/countries" element={<CountriesPage />} />
+        <Route path="/new-connections" element={<NewConnectionsPage />} />
+        <Route path="/smart-discovery" element={<SmartDiscoveryPage />} />
+        <Route path="/global-network" element={<GlobalNetworkPage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
+      <Footer />
     </div>
   );
 };
