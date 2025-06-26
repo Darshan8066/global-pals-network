@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { User as SupabaseUser, Session } from '@supabase/supabase-js';
@@ -7,7 +8,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'student' | 'artist' | 'businessperson' | 'professional' | 'entrepreneur' | 'designer' | 'developer' | 'teacher' | 'doctor' | 'engineer' | 'chef' | 'writer';
+  role: 'student' | 'artist' | 'businessperson' | 'professional' | 'entrepreneur' | 'designer' | 'developer' | 'teacher' | 'doctor' | 'engineer' | 'chef' | 'writer' | 'researcher' | 'consultant' | 'manager' | 'scientist' | 'lawyer' | 'photographer' | 'musician' | 'dancer' | 'athlete' | 'therapist' | 'social_worker' | 'journalist' | 'marketing_specialist' | 'sales_representative' | 'accountant' | 'other';
   country: string;
   city: string;
   occupation: string;
@@ -22,7 +23,7 @@ interface AuthContextProps {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
   session: Session | null;
@@ -86,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', supabaseUser.id)
+        .eq('user_id', supabaseUser.id)
         .single();
 
       if (error) {
@@ -100,15 +101,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           id: supabaseUser.id,
           name: profile.name,
           email: supabaseUser.email || '',
-          role: profile.role,
+          role: profile.role as User['role'] || 'student',
           country: profile.country,
           city: profile.city,
           occupation: profile.occupation,
           bio: profile.bio,
           interests: profile.interests || [],
-          profileImage: profile.profileImage || '',
-          isVerified: profile.isVerified || false,
-          createdAt: new Date(profile.createdAt)
+          profileImage: profile.profile_image_url || '',
+          isVerified: profile.is_verified || false,
+          createdAt: new Date(profile.created_at)
         };
 
         setUser(userProfile);
@@ -122,13 +123,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (email: string) => {
+  const login = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithOtp({ email });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success('Check your email for the login link.');
+        toast.success('Logged in successfully!');
       }
     } catch (error) {
       toast.error('An error occurred during login.');
@@ -161,9 +165,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .from('profiles')
         .update({
           ...data,
-          updatedAt: new Date()
+          updated_at: new Date()
         })
-        .eq('id', user.id);
+        .eq('user_id', user.id);
 
       if (error) {
         toast.error(error.message);

@@ -22,25 +22,13 @@ const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login - in real app, this would be an API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Create a mock user for demonstration
-    const mockUser = {
-      id: '1',
-      email,
-      name: email.split('@')[0],
-      role: 'student' as const,
-      country: 'United States',
-      city: 'New York',
-      occupation: 'Computer Science Student',
-      interests: ['Technology', 'Travel'],
-      isVerified: true,
-      createdAt: new Date(),
-    };
-    
-    login(mockUser, 'mock-token');
-    setIsLoading(false);
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
