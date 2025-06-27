@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { User, Mail, MapPin, Briefcase, Heart } from 'lucide-react';
+import { User, Mail, MapPin, Briefcase, Heart, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface RegisterFormProps {
@@ -14,11 +15,12 @@ interface RegisterFormProps {
 }
 
 const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
-  const { register } = useAuth();
+  const { register, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     role: '' as 'student' | 'artist' | 'businessperson' | '',
     country: '',
     city: '',
@@ -30,8 +32,19 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validation
     if (!formData.name || !formData.email || !formData.password || !formData.role || !formData.country || !formData.city) {
       toast.error('Please fill in all required fields');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
       return;
     }
 
@@ -52,10 +65,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
       bio: formData.bio,
     };
 
-    const success = await register(userData);
-    if (success) {
-      toast.success('Account created successfully!');
-    }
+    await register(userData);
   };
 
   return (
@@ -84,6 +94,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                   placeholder="Enter your full name"
                   required
+                  disabled={isLoading}
                 />
               </div>
               
@@ -97,26 +108,49 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                   placeholder="Enter your email"
                   required
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-white">Password *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  placeholder="Create a password (min 6 chars)"
+                  required
+                  disabled={isLoading}
+                  minLength={6}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-white">Confirm Password *</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
+                  placeholder="Confirm your password"
+                  required
+                  disabled={isLoading}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Password *</Label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
-                placeholder="Create a password"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="role" className="text-white">I am a *</Label>
-              <Select value={formData.role} onValueChange={(value: 'student' | 'artist' | 'businessperson') => setFormData({...formData, role: value})}>
+              <Select 
+                value={formData.role} 
+                onValueChange={(value: 'student' | 'artist' | 'businessperson') => setFormData({...formData, role: value})}
+                disabled={isLoading}
+              >
                 <SelectTrigger className="bg-white/20 border-white/30 text-white">
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
@@ -142,6 +176,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                   placeholder="e.g., India"
                   required
+                  disabled={isLoading}
                 />
               </div>
               
@@ -155,6 +190,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                   placeholder="e.g., Toronto"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -171,6 +207,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                 onChange={(e) => setFormData({...formData, occupation: e.target.value})}
                 className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                 placeholder="e.g., Software Engineer"
+                disabled={isLoading}
               />
             </div>
 
@@ -183,6 +220,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                 className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                 placeholder="Tell us about yourself..."
                 rows={3}
+                disabled={isLoading}
               />
             </div>
 
@@ -195,14 +233,23 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                 onChange={(e) => setFormData({...formData, interests: e.target.value})}
                 className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                 placeholder="e.g., Travel, Food, Technology (comma separated)"
+                disabled={isLoading}
               />
             </div>
 
             <Button 
               type="submit" 
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3"
+              disabled={isLoading}
             >
-              Create Account
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </Button>
 
             {onSwitchToLogin && (
@@ -212,6 +259,7 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
                   variant="link"
                   onClick={onSwitchToLogin}
                   className="text-white/90 hover:text-white"
+                  disabled={isLoading}
                 >
                   Already have an account? Login here
                 </Button>
