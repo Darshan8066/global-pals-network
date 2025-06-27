@@ -1,346 +1,322 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  Search, 
-  Filter, 
-  Users, 
   MapPin, 
-  Shield,
-  MessageCircle,
-  Globe,
+  MessageCircle, 
+  UserPlus, 
+  Globe, 
+  Users,
+  Filter,
+  Sparkles,
   Heart,
-  UserPlus
+  Star
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import SearchBox from '../common/SearchBox';
+
+interface SearchResult {
+  id: string;
+  name: string;
+  role: 'student' | 'artist' | 'businessperson';
+  location: string;
+  occupation: string;
+  interests: string[];
+  bio?: string;
+  profileImage?: string;
+  isVerified: boolean;
+  isOnline: boolean;
+  mutualConnections: number;
+}
 
 const SearchPage = () => {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterRole, setFilterRole] = useState('');
-  const [filterCountry, setFilterCountry] = useState('');
-  
-  // State for button interactions
-  const [connectingUsers, setConnectingUsers] = useState<Set<string>>(new Set());
-  const [connectedUsers, setConnectedUsers] = useState<Set<string>>(new Set());
-  const [messagingUsers, setMessagingUsers] = useState<Set<string>>(new Set());
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const mockUsers = [
+  // Demo search results
+  const demoResults: SearchResult[] = [
     {
       id: '1',
-      name: 'Priya Sharma',
+      name: 'Sarah Chen',
       role: 'student',
-      country: 'India',
-      currentLocation: 'Toronto, Canada',
+      location: 'Toronto, Canada',
       occupation: 'Computer Science Student',
+      interests: ['Technology', 'AI', 'Travel', 'Photography'],
+      bio: 'International student from Taiwan studying CS at University of Toronto. Love exploring new tech and meeting people from different cultures!',
       isVerified: true,
-      interests: ['Technology', 'Travel', 'Food']
+      isOnline: true,
+      mutualConnections: 5
     },
     {
       id: '2',
-      name: 'Raj Patel',
-      role: 'businessperson',
-      country: 'India',
-      currentLocation: 'London, UK',
-      occupation: 'Marketing Manager',
+      name: 'Marcus Rodriguez',
+      role: 'artist',
+      location: 'Berlin, Germany',
+      occupation: 'Digital Artist & Designer',
+      interests: ['Digital Art', 'Music', 'Culture', 'Design'],
+      bio: 'Creating digital experiences that bridge cultures. Originally from Mexico, now calling Berlin home.',
       isVerified: true,
-      interests: ['Business', 'Networking', 'Cricket']
+      isOnline: false,
+      mutualConnections: 12
     },
     {
       id: '3',
-      name: 'Ananya Kumar',
-      role: 'artist',
-      country: 'India',
-      currentLocation: 'Berlin, Germany',
-      occupation: 'Graphic Designer',
+      name: 'Priya Sharma',
+      role: 'businessperson',
+      location: 'London, UK',
+      occupation: 'Marketing Director',
+      interests: ['Business', 'Networking', 'Yoga', 'Cooking'],
+      bio: 'Building brands and connecting communities. Always excited to meet fellow entrepreneurs and creative minds.',
       isVerified: false,
-      interests: ['Design', 'Art', 'Music']
+      isOnline: true,
+      mutualConnections: 8
     },
     {
       id: '4',
-      name: 'Vikram Singh',
+      name: 'Ahmed Hassan',
       role: 'student',
-      country: 'India',
-      currentLocation: 'Sydney, Australia',
-      occupation: 'MBA Student',
+      location: 'Sydney, Australia',
+      occupation: 'Medical Student',
+      interests: ['Medicine', 'Research', 'Sports', 'Community Service'],
+      bio: 'Future doctor passionate about global health. Love playing soccer and volunteering in local communities.',
       isVerified: true,
-      interests: ['Business', 'Sports', 'Photography']
-    },
-    {
-      id: '5',
-      name: 'Maria Rodriguez',
-      role: 'doctor',
-      country: 'Mexico',
-      currentLocation: 'Madrid, Spain',
-      occupation: 'Pediatric Doctor',
-      isVerified: true,
-      interests: ['Medicine', 'Children', 'Travel']
-    },
-    {
-      id: '6',
-      name: 'Ahmed Ali',
-      role: 'engineer',
-      country: 'Pakistan',
-      currentLocation: 'Dubai, UAE',
-      occupation: 'Software Engineer',
-      isVerified: true,
-      interests: ['Technology', 'Innovation', 'Sports']
+      isOnline: false,
+      mutualConnections: 3
     }
   ];
 
-  const filteredUsers = mockUsers.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         user.occupation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         user.currentLocation.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = !filterRole || filterRole === 'all' || user.role === filterRole;
-    const matchesCountry = !filterCountry || filterCountry === 'all' || user.country === filterCountry;
+  const handleSearch = (query: string, filters: any) => {
+    setIsLoading(true);
     
-    return matchesSearch && matchesRole && matchesCountry;
-  });
-
-  const handleConnect = (userId: string) => {
-    setConnectingUsers(prev => new Set(prev).add(userId));
-    
-    // Simulate connection process
+    // Simulate API call
     setTimeout(() => {
-      setConnectingUsers(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(userId);
-        return newSet;
-      });
-      setConnectedUsers(prev => new Set(prev).add(userId));
+      let results = [...demoResults];
+      
+      if (query.trim()) {
+        results = results.filter(person => 
+          person.name.toLowerCase().includes(query.toLowerCase()) ||
+          person.occupation.toLowerCase().includes(query.toLowerCase()) ||
+          person.location.toLowerCase().includes(query.toLowerCase()) ||
+          person.interests.some(interest => 
+            interest.toLowerCase().includes(query.toLowerCase())
+          )
+        );
+      }
+      
+      if (filters.role) {
+        results = results.filter(person => person.role === filters.role);
+      }
+      
+      if (filters.location) {
+        results = results.filter(person => 
+          person.location.toLowerCase().includes(filters.location.toLowerCase())
+        );
+      }
+      
+      setSearchResults(results);
+      setIsLoading(false);
     }, 1000);
   };
 
-  const handleMessage = (userId: string) => {
-    setMessagingUsers(prev => new Set(prev).add(userId));
-    
-    // Simulate message process and navigate to chat
-    setTimeout(() => {
-      setMessagingUsers(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(userId);
-        return newSet;
-      });
-      navigate('/chat');
-    }, 800);
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'student': return '🎓';
+      case 'artist': return '🎨';
+      case 'businessperson': return '💼';
+      default: return '👤';
+    }
+  };
+
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'student': return 'from-blue-500 to-cyan-500';
+      case 'artist': return 'from-purple-500 to-pink-500';
+      case 'businessperson': return 'from-green-500 to-emerald-500';
+      default: return 'from-gray-500 to-gray-600';
+    }
   };
 
   return (
     <div className="min-h-screen gradient-bg relative overflow-hidden pb-20">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full float-animation blur-xl"></div>
-        <div className="absolute top-40 right-40 w-24 h-24 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full drift-animation blur-xl" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-20 left-40 w-28 h-28 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full float-animation blur-xl" style={{animationDelay: '2s'}}></div>
-        
-        {/* Floating search icons */}
-        <div className="absolute top-32 right-32 text-3xl opacity-10 bounce-gentle">🔍</div>
-        <div className="absolute bottom-40 left-20 text-4xl opacity-10 float-animation" style={{animationDelay: '1.5s'}}>👥</div>
+        <div className="absolute top-20 left-20 w-40 h-40 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full float-animation blur-xl"></div>
+        <div className="absolute top-60 right-32 w-32 h-32 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full drift-animation blur-xl"></div>
+        <div className="absolute bottom-40 left-32 w-36 h-36 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full float-animation blur-xl"></div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
-        <div className="mb-8 text-center">
+      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+        {/* Header */}
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="relative pulse-glow">
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-full p-3 shadow-2xl">
-                <Search className="h-8 w-8 text-white" />
+              <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-full p-4 shadow-2xl">
+                <Users className="h-10 w-10 text-white" />
               </div>
-              <MapPin className="h-4 w-4 text-yellow-400 absolute -top-1 -right-1 bounce-gentle" />
+              <Sparkles className="h-4 w-4 text-yellow-300 absolute -top-1 -right-1 bounce-gentle" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-              Find Your Community
-            </h1>
-            <Globe className="h-6 w-6 text-blue-400 bounce-gentle" />
+            <div className="text-center">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent text-shadow mb-2">
+                Find Your Community
+              </h1>
+              <p className="text-lg text-blue-200 font-medium">Connect with people from your homeland worldwide</p>
+            </div>
           </div>
-          <p className="text-gray-200 text-lg">
-            Connect with people from your homeland living around the world
-          </p>
         </div>
 
-        {/* Search and Filters */}
-        <Card className="glass-card shadow-2xl mb-8 border-0 hover:shadow-3xl transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2 text-lg">
-              <Filter className="h-5 w-5 text-blue-400" />
-              Search & Filter
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="md:col-span-2">
-                <Input
-                  placeholder="Search by name, job, or location..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-slate-800/50 border-blue-500/30 focus:border-blue-400 focus:ring-blue-400 text-white placeholder-gray-400 text-sm py-2"
-                />
-              </div>
-              
-              <Select value={filterRole} onValueChange={setFilterRole}>
-                <SelectTrigger className="bg-slate-800/50 border-blue-500/30 focus:border-blue-400 text-white text-sm">
-                  <SelectValue placeholder="Filter by role" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-blue-500/30">
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="student">🎓 Student</SelectItem>
-                  <SelectItem value="artist">🎨 Artist</SelectItem>
-                  <SelectItem value="businessperson">💼 Business Person</SelectItem>
-                  <SelectItem value="doctor">👩‍⚕️ Doctor</SelectItem>
-                  <SelectItem value="engineer">👨‍💻 Engineer</SelectItem>
-                  <SelectItem value="teacher">👩‍🏫 Teacher</SelectItem>
-                  <SelectItem value="lawyer">⚖️ Lawyer</SelectItem>
-                  <SelectItem value="chef">👨‍🍳 Chef</SelectItem>
-                  <SelectItem value="photographer">📸 Photographer</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Select value={filterCountry} onValueChange={setFilterCountry}>
-                <SelectTrigger className="bg-slate-800/50 border-blue-500/30 focus:border-blue-400 text-white text-sm">
-                  <SelectValue placeholder="Filter by country" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-blue-500/30">
-                  <SelectItem value="all">All Countries</SelectItem>
-                  <SelectItem value="India">🇮🇳 India</SelectItem>
-                  <SelectItem value="Pakistan">🇵🇰 Pakistan</SelectItem>
-                  <SelectItem value="Bangladesh">🇧🇩 Bangladesh</SelectItem>
-                  <SelectItem value="Mexico">🇲🇽 Mexico</SelectItem>
-                  <SelectItem value="China">🇨🇳 China</SelectItem>
-                  <SelectItem value="Philippines">🇵🇭 Philippines</SelectItem>
-                  <SelectItem value="Nigeria">🇳🇬 Nigeria</SelectItem>
-                  <SelectItem value="Brazil">🇧🇷 Brazil</SelectItem>
-                  <SelectItem value="Turkey">🇹🇷 Turkey</SelectItem>
-                  <SelectItem value="Vietnam">🇻🇳 Vietnam</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Search Box */}
+        <div className="mb-8">
+          <SearchBox onSearch={handleSearch} />
+        </div>
 
-        {/* Results */}
-        <Card className="glass-card shadow-2xl border-0">
-          <CardHeader>
-            <CardTitle className="text-white text-xl flex items-center gap-3">
-              <Users className="h-6 w-6 text-blue-400" />
-              Found {filteredUsers.length} People
-              <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs">Active</Badge>
-            </CardTitle>
-            <CardDescription className="text-gray-300 text-base">
-              Connect with amazing people from your community
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {filteredUsers.map((person) => (
-                <div
-                  key={person.id}
-                  className="animated-card p-6 hover:scale-102 transition-all duration-300 hover:shadow-2xl shimmer-effect"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
+        {/* Search Results */}
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="loading-spinner mx-auto mb-4"></div>
+            <p className="text-white/80 text-lg">Searching for your community...</p>
+          </div>
+        ) : searchResults.length > 0 ? (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white">
+                Found {searchResults.length} people
+              </h2>
+              <Button className="btn-outline">
+                <Filter className="h-4 w-4 mr-2" />
+                Sort by relevance
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {searchResults.map((person) => (
+                <Card key={person.id} className="animated-card card-hover border-0">
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-4 mb-4">
                       <div className="relative">
-                        <Avatar className="h-16 w-16 border-4 border-blue-400/50 shadow-xl">
-                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-bold">
+                        <Avatar className="h-16 w-16 border-2 border-white/20">
+                          <AvatarImage src={person.profileImage} alt={person.name} />
+                          <AvatarFallback className={`bg-gradient-to-r ${getRoleColor(person.role)} text-white font-bold text-lg`}>
                             {person.name.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        {person.isVerified && (
-                          <Shield className="h-5 w-5 text-green-400 absolute -bottom-1 -right-1 bg-slate-800 rounded-full p-1" />
+                        {person.isOnline && (
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white"></div>
                         )}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-semibold text-white text-lg">{person.name}</h3>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-white font-semibold text-lg truncate">{person.name}</h3>
                           {person.isVerified && (
-                            <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs">
-                              <Shield className="h-3 w-3 mr-1" />
-                              Verified
-                            </Badge>
+                            <Star className="h-4 w-4 text-yellow-400 flex-shrink-0" />
                           )}
                         </div>
-                        <p className="text-gray-300 mb-2 flex items-center gap-1 text-sm">
-                          {person.role === 'student' ? '🎓' : person.role === 'artist' ? '🎨' : person.role === 'doctor' ? '👩‍⚕️' : person.role === 'engineer' ? '👨‍💻' : '💼'} 
-                          {person.occupation}
-                        </p>
-                        <div className="flex items-center space-x-2 text-gray-400 mb-3 text-sm">
-                          <MapPin className="h-4 w-4" />
-                          <span>From {person.country} • Now in {person.currentLocation}</span>
+                        
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge className={`bg-gradient-to-r ${getRoleColor(person.role)} text-white border-0 text-xs`}>
+                            {getRoleIcon(person.role)} {person.role.charAt(0).toUpperCase() + person.role.slice(1)}
+                          </Badge>
                         </div>
+
+                        <div className="flex items-center text-white/70 text-sm mb-2">
+                          <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">{person.location}</span>
+                        </div>
+
+                        <p className="text-white/80 text-sm font-medium mb-2">{person.occupation}</p>
+                      </div>
+                    </div>
+
+                    {person.bio && (
+                      <p className="text-white/70 text-sm mb-4 line-clamp-3 leading-relaxed">
+                        {person.bio}
+                      </p>
+                    )}
+
+                    {person.interests.length > 0 && (
+                      <div className="mb-4">
                         <div className="flex flex-wrap gap-1">
-                          {person.interests.map((interest, index) => (
-                            <Badge key={index} className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/30 text-xs">
+                          {person.interests.slice(0, 3).map((interest, index) => (
+                            <Badge key={index} variant="outline" className="bg-white/10 text-white/80 border-white/20 text-xs">
                               {interest}
                             </Badge>
                           ))}
+                          {person.interests.length > 3 && (
+                            <Badge variant="outline" className="bg-white/10 text-white/60 border-white/20 text-xs">
+                              +{person.interests.length - 3} more
+                            </Badge>
+                          )}
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col space-y-3">
-                      <Button 
-                        onClick={() => handleConnect(person.id)}
-                        disabled={connectingUsers.has(person.id) || connectedUsers.has(person.id)}
-                        size="sm"
-                        className={`btn-animated border-0 text-sm ${
-                          connectedUsers.has(person.id)
-                            ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
-                            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
-                        } text-white`}
-                      >
-                        {connectingUsers.has(person.id) ? (
-                          <>
-                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                            Connecting...
-                          </>
-                        ) : connectedUsers.has(person.id) ? (
-                          <>
-                            <Heart className="h-3 w-3 mr-1 fill-current" />
-                            Connected
-                          </>
-                        ) : (
-                          <>
-                            <UserPlus className="h-3 w-3 mr-1" />
-                            Connect
-                          </>
-                        )}
+                    )}
+
+                    {person.mutualConnections > 0 && (
+                      <div className="flex items-center text-blue-300 text-xs mb-4">
+                        <Users className="h-3 w-3 mr-1" />
+                        {person.mutualConnections} mutual connections
+                      </div>
+                    )}
+
+                    <div className="flex gap-2">
+                      <Button size="sm" className="flex-1 btn-primary">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Message
                       </Button>
-                      <Button 
-                        onClick={() => handleMessage(person.id)}
-                        disabled={messagingUsers.has(person.id)}
-                        size="sm"
-                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white btn-animated border-0 text-sm"
-                      >
-                        {messagingUsers.has(person.id) ? (
-                          <>
-                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
-                            Opening...
-                          </>
-                        ) : (
-                          <>
-                            <MessageCircle className="h-3 w-3 mr-1" />
-                            Message
-                          </>
-                        )}
+                      <Button size="sm" className="flex-1 btn-outline">
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Connect
                       </Button>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-            
-            {filteredUsers.length === 0 && (
-              <div className="text-center py-16">
-                <Search className="h-16 w-16 text-gray-500 mx-auto mb-4" />
-                <p className="text-gray-300 text-lg mb-2">No people found matching your criteria</p>
-                <p className="text-gray-400 text-sm">Try adjusting your search or filters</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="mb-6">
+              <Globe className="h-16 w-16 text-white/40 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-white mb-2">Ready to find your community?</h3>
+              <p className="text-white/70 text-lg max-w-md mx-auto">
+                Use the search bar above to find people from your homeland, with similar interests, or in specific locations.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <Card className="animated-card">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="h-6 w-6 text-white" />
+                  </div>
+                  <h4 className="text-white font-semibold mb-2">Search by Location</h4>
+                  <p className="text-white/70 text-sm">Find people in your city or from your home country</p>
+                </CardContent>
+              </Card>
+
+              <Card className="animated-card">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Heart className="h-6 w-6 text-white" />
+                  </div>
+                  <h4 className="text-white font-semibold mb-2">Common Interests</h4>
+                  <p className="text-white/70 text-sm">Connect through shared hobbies and passions</p>
+                </CardContent>
+              </Card>
+
+              <Card className="animated-card">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
+                  <h4 className="text-white font-semibold mb-2">Professional Networks</h4>
+                  <p className="text-white/70 text-sm">Meet people in your field or industry</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
